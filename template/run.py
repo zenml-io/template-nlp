@@ -86,6 +86,16 @@ Examples:
     type=click.FLOAT,
     help="Weight decay for training the model.",
 )
+<<<<<<< HEAD
+=======
+@click.option(
+    "--fail-on-accuracy-quality-gates",
+    is_flag=True,
+    default=False,
+    help="Whether to fail the pipeline run if the model evaluation step "
+    "finds that the model is not accurate enough.",
+)
+>>>>>>> a3b825e (initial nlp template project code)
 def main(
     no_cache: bool = False,
     seed: int = 42,
@@ -94,6 +104,12 @@ def main(
     eval_batch_size: int = 16,
     learning_rate: float = 2e-5,
     weight_decay: float = 0.01,
+<<<<<<< HEAD
+=======
+    min_train_accuracy: float = 0.8,
+    min_test_accuracy: float = 0.8,
+    fail_on_accuracy_quality_gates: bool = False,
+>>>>>>> a3b825e (initial nlp template project code)
 ):
     """Main entry point for the pipeline execution.
 
@@ -105,6 +121,15 @@ def main(
 
     Args:
         no_cache: If `True` cache will be disabled.
+<<<<<<< HEAD
+=======
+        test_size: Percentage of records from the training dataset to go into the test dataset.
+        min_train_accuracy: Minimum acceptable accuracy on the train set.
+        min_test_accuracy: Minimum acceptable accuracy on the test set.
+        fail_on_accuracy_quality_gates: If `True` and any of minimal accuracy
+            thresholds are violated - the pipeline will fail. If `False` thresholds will
+            not affect the pipeline.
+>>>>>>> a3b825e (initial nlp template project code)
     """
 
     # Run a pipeline with the required parameters. This executes
@@ -116,11 +141,19 @@ def main(
 
     # Execute Training Pipeline
     run_args_train = {
+<<<<<<< HEAD
+=======
+        "seed": seed,
+>>>>>>> a3b825e (initial nlp template project code)
         "num_epochs": num_epochs,
         "train_batch_size": train_batch_size,
         "eval_batch_size": eval_batch_size,
         "learning_rate": learning_rate,
         "weight_decay": weight_decay,
+<<<<<<< HEAD
+=======
+        "fail_on_accuracy_quality_gates": fail_on_accuracy_quality_gates,
+>>>>>>> a3b825e (initial nlp template project code)
     }
 
     pipeline_args[

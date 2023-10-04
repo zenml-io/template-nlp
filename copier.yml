@@ -96,7 +96,6 @@ custom_training:
     type: bool
     help: "Whether to use custom training or not"
     default: False
-
 # CONFIGURATION -------------------------
 _templates_suffix: ""
 _subdirectory: template
