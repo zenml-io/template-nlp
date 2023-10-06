@@ -11,12 +11,12 @@ from utils.misc import (
     HFPretrainedTokenizer,
 )
 from zenml.integrations.constants import (
-{%- if cloud_of_choice == 'AWS' %}
+{%- if cloud_of_choice == 'aws' %}
     SKYPILOT_AWS,
     AWS,
     S3,
 {%- endif %}
-{%- if cloud_of_choice == 'GCP' %}
+{%- if cloud_of_choice == 'gcp' %}
     SKYPILOT_GCP,
     GCP,
 {%- endif %}
@@ -31,12 +31,12 @@ from zenml.model_registries.base_model_registry import ModelVersionStage
 PIPELINE_SETTINGS = dict(
     docker=DockerSettings(
         required_integrations=[
-            {%- if cloud_of_choice == 'AWS' %}
+            {%- if cloud_of_choice == 'aws' %}
                 SKYPILOT_AWS,
                 AWS,
                 S3,
             {%- endif %}
-            {%- if cloud_of_choice == 'GCP' %}
+            {%- if cloud_of_choice == 'gcp' %}
                 SKYPILOT_GCP,
                 GCP,
             {%- endif %}
@@ -44,6 +44,9 @@ PIPELINE_SETTINGS = dict(
                 PYTORCH,
                 MLFLOW,
                 SLACK,
+        ],
+        requirements=[
+            "accelerate",
         ],
     ) 
 )

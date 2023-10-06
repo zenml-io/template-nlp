@@ -1,0 +1,79 @@
+# {% include 'template/license_header' %}
+
+
+import torch
+from torch import nn
+from transformers import AdamW
+from transformers import get_scheduler
+from tqdm.auto import tqdm
+
+from zenml import step
+from zenml.enums import StrEnum
+from zenml.client import Client
+
+experiment_tracker = Client().active_stack.experiment_tracker
+
+@step
+def full_training_step(
+    train_dataloader: DataLoader,
+    hf_pretrained_model: HFPretrainedModel,
+) -> nn.Module:
+    """Data splitter step.
+
+    This is an example of a data splitter step that splits the dataset into
+    training and dev subsets to be used for model training and evaluation. It
+    takes in a dataset as an step input artifact and returns the training and
+    dev subsets as two separate step output artifacts.
+
+    Data splitter steps should have a deterministic behavior, i.e. they should
+    use a fixed random seed and always return the same split when called with
+    the same input dataset. This is to ensure reproducibility of your pipeline
+    runs.
+
+    This step is parameterized using the `DataSplitterStepParameters` class,
+    which allows you to configure the step independently of the step code,
+    before running it in a pipeline. In this example, the step can be configured
+    to use a different random seed, change the split ratio, or control whether
+    to shuffle or stratify the split. See the documentation for more
+    information:
+
+        https://docs.zenml.io/user-guide/starter-guide/cache-previous-executions
+
+    Args:
+        params: Parameters for the data splitter step.
+        dataset: The dataset to split.
+
+    Returns:
+        The resulting training and dev subsets.
+    """
+    mlflow.pytorch.autolog()
+    model = BertForSequenceClassification.from_pretrained(hf_pretrained_model.value, num_labels=3)
+    optimizer = AdamW(model.parameters(), lr=5e-5)
+    num_epochs = 5
+    num_training_steps = num_epochs * len(train_dataloader)
+    lr_scheduler = get_scheduler(
+        "linear",
+        optimizer=optimizer,
+        num_warmup_steps=0,
+        num_training_steps=num_training_steps,
+    )
+    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+    model.to(device)
+    progress_bar = tqdm(range(num_training_steps))
+    model.train()
+    for epoch in range(num_epochs):
+        for batch in train_dataloader:
+            batch = {k: v.to(device) for k, v in batch.items()}
+            outputs = model(**batch)
+            loss = outputs.loss
+            loss.backward()
+
+            optimizer.step()
+            lr_scheduler.step()
+            optimizer.zero_grad()
+            progress_bar.update(1)
+
+      loss, current = loss.item(), batch * len(X)
+      logger.info(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
+
+    return model

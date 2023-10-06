@@ -1,0 +1,64 @@
+# {% include 'template/license_header' %}
+
+
+from typing_extensions import Annotated
+
+from torch.utils.data import DataLoader
+
+from zenml import step
+from zenml.logger import get_logger
+
+from config import HFSentimentAnalysisDataset
+
+logger = get_logger(__name__)
+
+
+@step
+def prepare_dataloaders_step(
+    tokenizer: PreTrainedTokenizerBase,
+    dataset: DatasetDict,
+) -> (
+    Tuple[
+        Annotated[DataLoader, "train_dataloader"],
+        Annotated[DataLoader, "validation_dataloader"],
+    ]
+):
+    """Data splitter step.
+
+    This is an example of a data splitter step that splits the dataset into
+    training and dev subsets to be used for model training and evaluation. It
+    takes in a dataset as an step input artifact and returns the training and
+    dev subsets as two separate step output artifacts.
+
+    Data splitter steps should have a deterministic behavior, i.e. they should
+    use a fixed random seed and always return the same split when called with
+    the same input dataset. This is to ensure reproducibility of your pipeline
+    runs.
+
+    This step is parameterized using the `DataSplitterStepParameters` class,
+    which allows you to configure the step independently of the step code,
+    before running it in a pipeline. In this example, the step can be configured
+    to use a different random seed, change the split ratio, or control whether
+    to shuffle or stratify the split. See the documentation for more
+    information:
+
+        https://docs.zenml.io/user-guide/starter-guide/cache-previous-executions
+
+    Args:
+        params: Parameters for the data splitter step.
+        dataset: The dataset to split.
+
+    Returns:
+        The resulting training and dev subsets.
+    """
+    proccessed_datasets = dataset.remove_columns(["text"])
+    proccessed_datasets = proccessed_datasets.rename_column("label", "labels")
+    proccessed_datasets.set_format("torch")
+    data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
+    train_dataloader = DataLoader(
+        proccessed_datasets["train"], shuffle=True, batch_size=16, collate_fn=data_collator
+    )
+    validation_dataloader = DataLoader(
+        proccessed_datasets["validation"], batch_size=16, collate_fn=data_collator
+    )
+    return train_dataloader, validation_dataloader

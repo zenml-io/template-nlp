@@ -32,6 +32,7 @@ def model_trainer(
     seed: Optional[int] = 42,
     learning_rate: Optional[float] = 2e-5,
     load_best_model_at_end: Optional[bool] = True,
+    evaluation_strategy = "no",
     eval_batch_size: Optional[int] = 16,
     weight_decay: Optional[float] = 0.01,
 ) -> PreTrainedModel:
@@ -81,7 +82,10 @@ def model_trainer(
             per_device_eval_batch_size=eval_batch_size,
             num_train_epochs=num_epochs,
             weight_decay=weight_decay,
-            save_strategy="epoch",
+            save_strategy='epoch',
+            evaluation_strategy = "epoch",
+            #save_steps=200,
+            save_total_limit=5,
             load_best_model_at_end=load_best_model_at_end,
         )
         trainer = Trainer(
@@ -102,7 +106,10 @@ def model_trainer(
             per_device_eval_batch_size=eval_batch_size,
             num_train_epochs=num_epochs,
             weight_decay=weight_decay,
-            save_strategy="epoch",
+            save_strategy='epoch',
+            evaluation_strategy = "epoch",
+            #save_steps=200,
+            save_total_limit=5,
             load_best_model_at_end=load_best_model_at_end,
         )
         trainer = Trainer(

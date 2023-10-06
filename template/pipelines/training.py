@@ -11,6 +11,8 @@ from steps import (
     notify_on_success,
     promote_latest,
     promote_get_versions,
+    tokenization_step,
+    tokenizer_loader,
 )
 from zenml import pipeline
 from zenml.integrations.mlflow.steps.mlflow_deployer import (
@@ -33,14 +35,14 @@ def {{product_name}}_training(
     #hf_dataset: HFSentimentAnalysisDataset,
     #hf_tokenizer: HFPretrainedTokenizer,
     #hf_pretrained_model: HFPretrainedModel,
-    lower_case: bool = True,
+    lower_case: Optional[bool] = True,
     padding: Optional[str] = "max_length",
     max_seq_length: Optional[int] = 128,
     text_column: Optional[str] = "text",
     label_column: Optional[str] = "label",
     train_batch_size: Optional[int] = 16,
     eval_batch_size: Optional[int] = 16,
-    epochs: Optional[int] = 3,
+    num_epochs: Optional[int] = 3,
     learning_rate: Optional[float] = 2e-5,
     weight_decay: Optional[float] = 0.01,
 ):
@@ -91,7 +93,7 @@ def {{product_name}}_training(
         tokenizer=tokenizer,
         train_batch_size=train_batch_size,
         eval_batch_size=eval_batch_size,
-        num_epochs=epochs,
+        num_epochs=num_epochs,
         learning_rate=learning_rate,
         weight_decay=weight_decay,
     )

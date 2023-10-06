@@ -92,7 +92,10 @@ zenml_server_url:
     type: str
     help: "The URL of the ZenML server [Optional]"
     default: ""
-
+custom_training:
+    type: bool
+    help: "Whether to use custom training or not"
+    default: False
 
 # CONFIGURATION -------------------------
 _templates_suffix: ""
