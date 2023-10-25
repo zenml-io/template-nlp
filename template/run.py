@@ -4,9 +4,7 @@
 from zenml.steps.external_artifact import ExternalArtifact
 from zenml.logger import get_logger
 from pipelines import {{product_name}}_training
-from config import MetaConfig
 import click
-from typing import Optional
 from datetime import datetime as dt
 
 logger = get_logger(__name__)
@@ -125,7 +123,7 @@ def main(
 
     pipeline_args[
         "run_name"
-    ] = f"{MetaConfig.pipeline_name_training}_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+    ] = f"{{product_name}}_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
     {{product_name}}_training.with_options(**pipeline_args)(**run_args_train)
     logger.info("Training pipeline finished successfully!")
 

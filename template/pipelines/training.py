@@ -1,48 +1,34 @@
 # {% include 'template/license_header' %}
 
 
-from typing import List, Optional
+from typing import Optional
 
-from config import DEFAULT_PIPELINE_EXTRAS, PIPELINE_SETTINGS, MetaConfig
 from steps import (
-    data_loader,
-    model_trainer,
     notify_on_failure,
     notify_on_success,
-    promote_latest,
-    promote_get_versions,
-    tokenization_step,
+    data_loader,
     tokenizer_loader,
+    tokenization_step,
+    model_trainer,
+    log_register,
 )
-from zenml import pipeline
-from zenml.integrations.mlflow.steps.mlflow_deployer import (
-    mlflow_model_registry_deployer_step,
-)
-from zenml.integrations.mlflow.steps.mlflow_registry import mlflow_register_model_step
+from zenml import pipeline, get_pipeline_context
 from zenml.logger import get_logger
-from zenml.steps.external_artifact import ExternalArtifact
 
 
 logger = get_logger(__name__)
 
 
-@pipeline(
-    settings=PIPELINE_SETTINGS,
-    on_failure=notify_on_failure,
-    extra=DEFAULT_PIPELINE_EXTRAS,
-)
-def {{product_name}}_training(
-    #hf_dataset: HFSentimentAnalysisDataset,
-    #hf_tokenizer: HFPretrainedTokenizer,
-    #hf_pretrained_model: HFPretrainedModel,
+@pipeline(on_failure=notify_on_failure)
+def {{product_name}}_training_{{dataset}}(
     lower_case: Optional[bool] = True,
     padding: Optional[str] = "max_length",
     max_seq_length: Optional[int] = 128,
     text_column: Optional[str] = "text",
     label_column: Optional[str] = "label",
-    train_batch_size: Optional[int] = 16,
-    eval_batch_size: Optional[int] = 16,
-    num_epochs: Optional[int] = 3,
+    train_batch_size: Optional[int] = 8,
+    eval_batch_size: Optional[int] = 8,
+    num_epochs: Optional[int] = 5,
     learning_rate: Optional[float] = 2e-5,
     weight_decay: Optional[float] = 0.01,
 ):
@@ -68,12 +54,12 @@ def {{product_name}}_training(
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
     # Link all the steps together by calling them and passing the output
     # of one step as the input of the next step.
+    pipeline_extra = get_pipeline_context().extra
     ########## Tokenization stage ##########
     dataset = data_loader(
-        hf_dataset=MetaConfig.dataset,
+        shuffle=True,
     )
     tokenizer = tokenizer_loader(
-        hf_tokenizer=MetaConfig.tokenizer, 
         lower_case=lower_case
     )
     tokenized_data = tokenization_step(
@@ -82,14 +68,12 @@ def {{product_name}}_training(
         padding=padding,
         max_seq_length=max_seq_length,
         text_column=text_column,
-        label_column=label_column
+        label_column=label_column,
     )
 
-
     ########## Training stage ##########
-    model = model_trainer(
+    model, tokenizer = model_trainer(
         tokenized_dataset=tokenized_data,
-        hf_pretrained_model=MetaConfig.model,
         tokenizer=tokenizer,
         train_batch_size=train_batch_size,
         eval_batch_size=eval_batch_size,
@@ -98,20 +82,12 @@ def {{product_name}}_training(
         weight_decay=weight_decay,
     )
 
-    mlflow_register_model_step(
-        model,
-        name=MetaConfig.mlflow_model_name,
+    ########## Log and Register stage ##########
+    log_register(
+        model=model,
+        tokenizer=tokenizer,
+        name="{{product_name}}_training_{{dataset}}",
     )
 
-    ########## Promotion stage ##########
-    latest_version, current_version = promote_get_versions(
-        after=["mlflow_register_model_step"],
-    )
-    promote_latest(
-        latest_version=latest_version,
-        current_version=current_version,
-    )
-    last_step_name = "promote_latest"
-
-    notify_on_success(after=[last_step_name])
+    notify_on_success(after=[log_register])
     ### YOUR CODE ENDS HERE ###

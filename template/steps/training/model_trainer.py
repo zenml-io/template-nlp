@@ -1,130 +1,150 @@
-from typing import Tuple, Optional
+# {% include 'template/license_header' %}
 
-from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score
-from transformers import TrainingArguments, Trainer, PreTrainedModel, DataCollatorWithPadding
-from transformers import BertForSequenceClassification, GPT2ForSequenceClassification
-from datasets import DatasetDict
-from transformers import PreTrainedTokenizerBase
+from typing import Optional, Tuple
+from typing_extensions import Annotated
+
 import mlflow
-
+from datasets import DatasetDict
+from transformers import (
+    DataCollatorWithPadding,
+    PreTrainedModel,
+    PreTrainedTokenizerBase,
+    Trainer,
+    TrainingArguments,
+    AutoModelForSequenceClassification,
+)
 from zenml import step
-from zenml.enums import StrEnum
 from zenml.client import Client
+from zenml.integrations.mlflow.experiment_trackers import MLFlowExperimentTracker
+from zenml.logger import get_logger
 
-from utils.misc import compute_metrics
+from template.utils.misc import compute_metrics
 
+# Initialize logger
+logger = get_logger(__name__)
+
+# Get experiment tracker
 experiment_tracker = Client().active_stack.experiment_tracker
 
-class HFPretrainedModel(StrEnum):
-    """HuggingFace Sentiment Analysis Model."""
-    bert = "bert-base-uncased"
-    gpt2 = "gpt2"
-
+# Check if experiment tracker is set and is of type MLFlowExperimentTracker
+if not experiment_tracker or not isinstance(
+    experiment_tracker, MLFlowExperimentTracker
+):
+    raise RuntimeError(
+        "Your active stack needs to contain a MLFlow experiment tracker for "
+        "this example to work."
+    )
 
 @step(experiment_tracker=experiment_tracker.name)
 def model_trainer(
-    hf_pretrained_model: HFPretrainedModel,
     tokenized_dataset: DatasetDict,
     tokenizer: PreTrainedTokenizerBase,
-    num_labels: Optional[int] = 3,
+    num_labels: Optional[int] = None,
     train_batch_size: Optional[int] = 16,
     num_epochs: Optional[int] = 3,
-    seed: Optional[int] = 42,
     learning_rate: Optional[float] = 2e-5,
     load_best_model_at_end: Optional[bool] = True,
-    evaluation_strategy = "no",
     eval_batch_size: Optional[int] = 16,
     weight_decay: Optional[float] = 0.01,
-) -> PreTrainedModel:
-    """Configure and train a model on the training dataset.
+    mlflow_model_name: Optional[str] = "model",
+) -> Tuple[Annotated[PreTrainedModel, "model"], Annotated[PreTrainedTokenizerBase, "tokenizer"]]:
+    """
+    Configure and train a model on the training dataset.
 
-    This is an example of a model training step that takes in a dataset artifact
-    previously loaded and pre-processed by other steps in your pipeline, then
-    configures and trains a model on it. The model is then returned as a step
-    output artifact.
+    This step takes in a dataset artifact previously loaded and pre-processed by 
+    other steps in your pipeline, then configures and trains a model on it. The 
+    model is then returned as a step output artifact.
 
-    Model training steps should have caching disabled if they are not
-    deterministic (i.e. if the model training involve some random processes
-    like initializing weights or shuffling data that are not controlled by
-    setting a fixed random seed). This example step ensures the outcome is
-    deterministic by initializing the model with a fixed random seed.
+    Model training steps should have caching disabled if they are not deterministic 
+    (i.e. if the model training involve some random processes like initializing 
+    weights or shuffling data that are not controlled by setting a fixed random seed). 
 
-    This step is parameterized using the `ModelTrainerStepParameters` class,
-    which allows you to configure the step independently of the step code,
-{%- if configurable_model %}
-    before running it in a pipeline. In this example, the step can be configured
-    to use a different model, change the random seed, or pass different
-    hyperparameters to the model constructor. See the documentation for more
-    information:
-{%- else %}
-    before running it in a pipeline. In this example, the step can be configured
-    to change the random seed, or pass different hyperparameters to the model
-    constructor. See the documentation for more information:
-{%- endif %}
-
-        https://docs.zenml.io/user-guide/starter-guide/cache-previous-executions
 
     Args:
-        params: The parameters for the model trainer step.
-        train_set: The training data set artifact.
+        hf_pretrained_model: The pre-trained model.
+        tokenized_dataset: The tokenized dataset.
+        tokenizer: The tokenizer.
+        num_labels: The number of labels.
+        train_batch_size: The training batch size.
+        num_epochs: The number of epochs.
+        learning_rate: The learning rate.
+        load_best_model_at_end: Whether to load the best model at the end.
+        eval_batch_size: The evaluation batch size.
+        weight_decay: The weight decay.
 
     Returns:
-        The trained model artifact.
+        The trained model and tokenizer.
     """
-    mlflow.transformers.autolog()
-    data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
-    if hf_pretrained_model == HFPretrainedModel.bert:
-        model = BertForSequenceClassification.from_pretrained(hf_pretrained_model.value, num_labels=num_labels)
-        training_args = TrainingArguments(
-            output_dir="zenml_artifact",
-            learning_rate=learning_rate,
-            per_device_train_batch_size=train_batch_size,
-            per_device_eval_batch_size=eval_batch_size,
-            num_train_epochs=num_epochs,
-            weight_decay=weight_decay,
-            save_strategy='epoch',
-            evaluation_strategy = "epoch",
-            #save_steps=200,
-            save_total_limit=5,
-            load_best_model_at_end=load_best_model_at_end,
-        )
-        trainer = Trainer(
-            model=model,
-            args=training_args,
-            train_dataset=tokenized_dataset["train"],
-            eval_dataset=tokenized_dataset["validation"],
-            compute_metrics=compute_metrics,
-            data_collator=data_collator,
-        )
-    elif hf_pretrained_model == HFPretrainedModel.gpt2:
-        model = GPT2ForSequenceClassification.from_pretrained(hf_pretrained_model.value, num_labels=3)
-        model.resize_token_embeddings(len(tokenizer))
-        training_args = TrainingArguments(
-            output_dir="zenml_artifact",
-            learning_rate=learning_rate,
-            per_device_train_batch_size=train_batch_size,
-            per_device_eval_batch_size=eval_batch_size,
-            num_train_epochs=num_epochs,
-            weight_decay=weight_decay,
-            save_strategy='epoch',
-            evaluation_strategy = "epoch",
-            #save_steps=200,
-            save_total_limit=5,
-            load_best_model_at_end=load_best_model_at_end,
-        )
-        trainer = Trainer(
-            model=model,
-            args=training_args,
-            train_dataset=tokenized_dataset["train"],
-            eval_dataset=tokenized_dataset["validation"],
-            compute_metrics=compute_metrics,
-            data_collator=data_collator,
-        )
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
-    # Initialize the model with the hyperparameters indicated in the step
-    # parameters and train it on the training set.
+    # Select the appropriate datasets based on the dataset type
+    {%- if dataset == 'imdb' %}
+    train_dataset = tokenized_dataset['train']
+    eval_dataset = tokenized_dataset['test']
+    {%- else %}
+    train_dataset = tokenized_dataset['train']
+    eval_dataset = tokenized_dataset['validation']
+    {%- endif %}
 
-    ### YOUR CODE ENDS HERE ###
+    # Initialize data collator
+    data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
+
+    # Set the number of labels
+    num_labels = num_labels or len(train_dataset.unique("labels"))
+
+    # Set the logging steps
+    logging_steps = len(train_dataset) // train_batch_size
+
+    # Initialize training arguments
+    training_args = TrainingArguments(
+        output_dir="zenml_artifact",
+        learning_rate=learning_rate,
+        per_device_train_batch_size=train_batch_size,
+        per_device_eval_batch_size=eval_batch_size,
+        num_train_epochs=num_epochs,
+        weight_decay=weight_decay,
+        evaluation_strategy='steps',
+        save_strategy='steps',
+        logging_steps=logging_steps,
+        save_total_limit=5,
+        report_to="mlflow",
+        load_best_model_at_end=load_best_model_at_end,
+    )
+    logger.info(f"Training arguments: {training_args}")
+
+    # Load the model
+    model = AutoModelForSequenceClassification.from_pretrained(
+        {{model}}, num_labels=num_labels
+    )
+
+    # Enable autologging
+    mlflow.transformers.autolog()
+
+    # Initialize the trainer
+    trainer = Trainer(
+        model=model,
+        args=training_args,
+        train_dataset=train_dataset,
+        eval_dataset=eval_dataset,
+        compute_metrics=compute_metrics,
+        data_collator=data_collator,
+    )
+
+    # Train and evaluate the model
     trainer.train()
     trainer.evaluate()
-    return model
+
+    #{%- if log_at_trainer %}
+    # Log the model
+    #components = {
+    #    "model": model,
+    #    "tokenizer": tokenizer,
+    #}
+    #mlflow.transformers.log_model(
+    #    transformers_model=components,
+    #    artifact_path=mlflow_model_name,
+    #    registered_model_name=mlflow_model_name,
+    #)
+    #{%- endif %}
+    ### YOUR CODE ENDS HERE ###
+
+    return model, tokenizer

@@ -17,3 +17,4 @@ from .promotion import (
     promote_get_versions,
 )
 from .training import model_trainer
+from .registrer import log_register

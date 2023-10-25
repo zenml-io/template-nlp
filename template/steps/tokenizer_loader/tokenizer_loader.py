@@ -1,53 +1,56 @@
 # {% include 'template/license_header' %}
 
-
+from transformers import PreTrainedTokenizerBase, AutoTokenizer
 from typing_extensions import Annotated
-from transformers import BertTokenizer, GPT2Tokenizer, PreTrainedTokenizerBase
-
-from zenml.enums import StrEnum
 from zenml import step
 from zenml.logger import get_logger
 
 logger = get_logger(__name__)
 
-class HFPretrainedTokenizer(StrEnum):
-    """HuggingFace Sentiment Analysis datasets."""
-    bert = "bert-base-uncased"
-    gpt2 = "gpt2"
-
 @step
 def tokenizer_loader(
-    hf_tokenizer: HFPretrainedTokenizer,
     lower_case: bool,
-) -> Annotated[PreTrainedTokenizerBase, "tokenzer"]:
-    """Tokenizer loader step.
+) -> Annotated[PreTrainedTokenizerBase, "tokenizer"]:
+    """Tokenizer selection step.
 
-    This is an example of a data processor step that prepares the data so that
-    it is suitable for model training. It takes in a dataset as an input step
-    artifact and performs any necessary preprocessing steps like cleaning,
-    feature engineering, feature selection, etc. It then returns the processed
-    dataset as a step output artifact.
+    This step is responsible for selecting and initializing the tokenizer based
+    on the model type. The tokenizer is a crucial component in Natural Language
+    Processing tasks as it is responsible for converting the input text into a
+    format that the model can understand.
 
-    This step is parameterized using the `DataProcessorStepParameters` class,
-    which allows you to configure the step independently of the step code,
-    before running it in a pipeline. In this example, the step can be configured
-    to perform or skip different preprocessing steps (e.g. dropping rows with
-    missing values, dropping columns, normalizing the data, etc.). See the
-    documentation for more information:
+    This step is parameterized, which allows you to configure the step independently
+    of the step code, before running it in a pipeline. In this example, the step can
+    be configured to use different types of tokenizers corresponding to different
+    models such as 'bert', 'roberta', or 'distilbert'. 
 
-        https://docs.zenml.io/user-guide/starter-guide/cache-previous-executions
+    For more information on how to configure steps in a pipeline, refer to the 
+    following documentation:
+
+        https://docs.zenml.io/user-guide/advanced-guide/configure-steps-pipelines
 
     Args:
-        params: Parameters for the data processor step.
+        lower_case: A boolean value indicating whether to convert the input text to
+        lower case during tokenization.
 
     Returns:
-        The processed dataset artifact.
+        The initialized tokenizer.
     """
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
-    if hf_tokenizer == HFPretrainedTokenizer.bert:
-        tokenizer = BertTokenizer.from_pretrained("bert-base-uncased", do_lower_case=lower_case)
-    elif hf_tokenizer == HFPretrainedTokenizer.gpt2:
-        tokenizer = GPT2Tokenizer.from_pretrained("gpt2", bos_token='<|startoftext|>', eos_token='<|endoftext|>', pad_token='<|pad|>')
+    {%- if model == 'bert' %}
+    tokenizer = AutoTokenizer.from_pretrained(
+        "bert-base-uncased", do_lower_case=lower_case
+    )
+    {%- endif %}
+    {%- if model == 'roberta' %}
+    tokenizer = AutoTokenizer.from_pretrained(
+        "roberta-base", do_lower_case=lower_case
+    )
+    {%- endif %}
+    {%- if model == 'distilbert' %}
+    tokenizer = AutoTokenizer.from_pretrained(
+        "distilbert-base-cased", do_lower_case=lower_case
+    )
+    {%- endif %}
     ### YOUR CODE ENDS HERE ###
 
     return tokenizer

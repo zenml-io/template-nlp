@@ -1,0 +1,32 @@
+# {% include 'template/license_header' %}
+
+settings:
+  docker:
+    parent_image: 'huggingface/transformers-pytorch-gpu'
+    required_integrations:
+{%- if cloud_of_choice == 'aws' %}
+      - aws
+      - skypilot_aws
+      - s3
+{%- endif %}
+{%- if cloud_of_choice == 'gcp' %}
+      - gcp
+      - skypilot_gcp
+{%- endif %}
+      - huggingface
+      - pytorch
+      - mlflow
+      - discord
+    requirements:
+      - accelerate
+      - zenml[server]
+
+extra:
+  mlflow_model_name: nlp_use_case_model
+{%- if target_environment == 'production' %}
+  target_env: Production
+{%- else %}
+  target_env: Staging
+{%- endif %}
+  notify_on_success: False
+  notify_on_failure: True
