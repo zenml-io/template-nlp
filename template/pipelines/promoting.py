@@ -22,12 +22,9 @@ logger = get_logger(__name__)
 @pipeline(
     on_failure=notify_on_failure,
 )
-def {{product}}_promote_{{dataset}}():
+def {{product_name}}_promote_{{dataset}}():
     """
     Model promotion pipeline.
-
-    
-
     """
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
     # Link all the steps together by calling them and passing the output

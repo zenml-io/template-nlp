@@ -10,7 +10,13 @@ from steps import (
     tokenizer_loader,
     tokenization_step,
     model_trainer,
-    log_register,
+    model_log_register,
+{%- if metric_compare_promotion %}
+    promote_get_metric,
+    promote_metric_compare_promoter,
+{%- else %}
+    promote_latest,
+{%- endif %}
 )
 from zenml import pipeline, get_pipeline_context
 from zenml.logger import get_logger
@@ -83,11 +89,11 @@ def {{product_name}}_training_{{dataset}}(
     )
 
     ########## Log and Register stage ##########
-    log_register(
+    model_log_register(
         model=model,
         tokenizer=tokenizer,
         name="{{product_name}}_training_{{dataset}}",
     )
 
-    notify_on_success(after=[log_register])
+    notify_on_success(after=[model_log_register])
     ### YOUR CODE ENDS HERE ###

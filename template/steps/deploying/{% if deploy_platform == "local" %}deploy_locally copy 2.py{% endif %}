@@ -1,0 +1,53 @@
+# {% include 'template/license_header' %}
+
+from typing import Optional
+import subprocess
+
+from transformers import (
+    PreTrainedModel,
+    PreTrainedTokenizerBase,
+)
+from zenml import step
+from zenml.client import Client
+from zenml.logger import get_logger
+
+# Initialize logger
+logger = get_logger(__name__)
+
+
+@step()
+def deploy_locally(
+    labels: dict[str, str] = ["Negative", "Positive"],
+    title: str = "ZenML",
+    description: str = "ZenML NLP Use-Case",
+    model_name_or_path: str,
+    tokenizer_name_or_path: str,
+):
+    """
+    
+    Args:
+        mlfow_model_name: The name of the model in MLFlow.
+        stage: The stage of the model in MLFlow.
+
+    Returns:
+        The trained model and tokenizer.
+    """
+    ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
+    lables = ",".join(labels)
+    command = ["python", "./gradio/app.py", "--tokenizer_name", tokenizer_name_or_path, "--model_name", model_name_or_path, 
+        "--labels", lables, "--title", "ZenML", "--description", description, 
+       "--interpretation", "default", "--examples", "This use-case is awesome!"]
+
+    # Launch the script in a separate process
+    process = subprocess.Popen(command)
+
+    # Print the process ID
+    print(f"Launched script with process ID: {process.pid}")
+
+    return process.pid
+
+    # Call the function to launch the script
+    pid = launch_script()
+    logger.info(f"Process ID: {pid}")
+    logger.info(f"To kill the process, run: kill -9 {pid}")
+    ### YOUR CODE ENDS HERE ###

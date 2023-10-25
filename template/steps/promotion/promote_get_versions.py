@@ -2,9 +2,9 @@
 
 
 from typing import Tuple
-from typing_extensions import Annotated
 
-from zenml import step, get_step_context
+from typing_extensions import Annotated
+from zenml import get_step_context, step
 from zenml.client import Client
 from zenml.logger import get_logger
 from zenml.model_registries.base_model_registry import ModelVersionStage

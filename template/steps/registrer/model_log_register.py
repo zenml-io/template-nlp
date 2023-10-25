@@ -1,12 +1,12 @@
 # {% include 'template/license_header' %}
 
 from typing import Optional
+
 import mlflow
 from transformers import (
     PreTrainedModel,
     PreTrainedTokenizerBase,
 )
-
 from zenml import step
 from zenml.client import Client
 from zenml.integrations.mlflow.experiment_trackers import MLFlowExperimentTracker
@@ -27,8 +27,9 @@ if not experiment_tracker or not isinstance(
         "this example to work."
     )
 
+
 @step(experiment_tracker=experiment_tracker.name)
-def model_register(
+def model_log_register(
     model: PreTrainedModel,
     tokenizer: PreTrainedTokenizerBase,
     mlflow_model_name: Optional[str] = "model",
@@ -41,7 +42,7 @@ def model_register(
 
     Model training steps should have caching disabled if they are not deterministic
     (i.e. if the model training involve some random processes like initializing
-    weights or shuffling data that are not controlled by setting a fixed random seed).    
+    weights or shuffling data that are not controlled by setting a fixed random seed).
 
     Args:
         model: The model.

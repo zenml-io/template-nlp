@@ -132,19 +132,6 @@ def model_trainer(
     # Train and evaluate the model
     trainer.train()
     trainer.evaluate()
-
-    #{%- if log_at_trainer %}
-    # Log the model
-    #components = {
-    #    "model": model,
-    #    "tokenizer": tokenizer,
-    #}
-    #mlflow.transformers.log_model(
-    #    transformers_model=components,
-    #    artifact_path=mlflow_model_name,
-    #    registered_model_name=mlflow_model_name,
-    #)
-    #{%- endif %}
     ### YOUR CODE ENDS HERE ###
 
     return model, tokenizer

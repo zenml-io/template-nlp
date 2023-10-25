@@ -1,0 +1,41 @@
+# {% include 'template/license_header' %}
+
+from typing import Optional
+from huggingface_hub import create_branch, login, HfApi
+
+from zenml import step
+from zenml.client import Client
+from zenml.logger import get_logger
+
+# Initialize logger
+logger = get_logger(__name__)
+
+
+@step()
+def deploy_to_huggingface(
+    repo_name: str,
+    labels: dict[str, str] = ["Negative", "Positive"],
+    title: str = "ZenML",
+    description: str = "ZenML NLP Use-Case",
+):
+    """
+    
+    Args:
+        mlfow_model_name: The name of the model in MLFlow.
+        stage: The stage of the model in MLFlow.
+
+    Returns:
+        The trained model and tokenizer.
+    """
+    ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
+    lables = ",".join(labels)
+    secret = Client().get_secret("huggingface_creds")
+    huggingface_username = secret.secret_values["username"]
+    token = secret.secret_values["token"]
+    api = HfApi(token=token)
+    api.create_repo(repo_id=repo_name, repo_type="space", exist_ok=True)
+    space = api.upload_folder(
+        path="./gradio", repo_id=repo_name, repo_type="space"
+    )
+    logger.info(f"Space created: {space}")
+    ### YOUR CODE ENDS HERE ###

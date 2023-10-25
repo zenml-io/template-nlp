@@ -1,19 +1,39 @@
 import click
-import gradio as gr
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import numpy as np
+from transformers import AutoModelForSequenceClassification, AutoTokenizer
+
+import gradio as gr
+
 
 @click.command()
-@click.option('--tokenizer_name', default='roberta-base', help='Name of the tokenizer.')
-@click.option('--model_name', default='bert', help='Name of the model.')
-@click.option('--labels', default='Negative,Positive', help='Comma-separated list of labels.')
-@click.option('--title', default='ZenML NLP Use-Case', help='Title of the Gradio interface.')
-@click.option('--description', default='Tweets Analyzer', help='Description of the Gradio interface.')
-@click.option('--interpretation', default='default', help='Interpretation mode for the Gradio interface.')
-@click.option('--examples', default='bert,This airline sucks -_-', help='Comma-separated list of examples to show in the Gradio interface.')
-def sentiment_analysis(tokenizer_name, model_name, labels, title, description, interpretation, examples):
-    labels = labels.split(',')
-    examples = [examples.split(',')]
+@click.option("--tokenizer_name_or_path", default="roberta-base", help="Name or the path of the tokenizer.")
+@click.option("--model_name_or_path", default="./gradio/model", help="Name or the path of the model.")
+@click.option(
+    "--labels", default="Negative,Positive", help="Comma-separated list of labels."
+)
+@click.option(
+    "--title", default="ZenML NLP Use-Case", help="Title of the Gradio interface."
+)
+@click.option(
+    "--description",
+    default="Sentiment Analyzer",
+    help="Description of the Gradio interface.",
+)
+@click.option(
+    "--interpretation",
+    default="default",
+    help="Interpretation mode for the Gradio interface.",
+)
+@click.option(
+    "--examples",
+    default="bert,This airline sucks -_-",
+    help="Comma-separated list of examples to show in the Gradio interface.",
+)
+def sentiment_analysis(
+    tokenizer_name_or_path, model_name_or_path, labels, title, description, interpretation, examples
+):
+    labels = labels.split(",")
+    examples = [examples.split(",")]
 
     def preprocess(text):
         new_text = []
@@ -28,8 +48,8 @@ def sentiment_analysis(tokenizer_name, model_name, labels, title, description, i
         return e_x / e_x.sum(axis=0)
 
     def analyze_text(text):
-        tokenizer = AutoTokenizer.from_pretrained(tokenizer_name, do_lower_case=True)
-        model = AutoModelForSequenceClassification.from_pretrained(model_name)
+        tokenizer = AutoTokenizer.from_pretrained(tokenizer_name_or_path, do_lower_case=True)
+        model = AutoModelForSequenceClassification.from_pretrained(model_name_or_path)
 
         text = preprocess(text)
         encoded_input = tokenizer(text, return_tensors="pt")
@@ -47,10 +67,11 @@ def sentiment_analysis(tokenizer_name, model_name, labels, title, description, i
         title=title,
         description=description,
         interpretation=interpretation,
-        examples=examples
+        examples=examples,
     )
 
     demo.launch(share=True, debug=True)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     sentiment_analysis()
