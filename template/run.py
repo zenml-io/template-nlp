@@ -3,7 +3,11 @@
 
 from zenml.steps.external_artifact import ExternalArtifact
 from zenml.logger import get_logger
-from pipelines import {{product_name}}_training
+from pipelines import (
+    {{product_name}}_training,
+    {{product_name}}_promote_pipeline,
+    {{product_name}}_{{deployment_platform}}_deploy_pipeline,
+)
 import click
 from datetime import datetime as dt
 
@@ -50,25 +54,19 @@ Examples:
 )
 @click.option(
     "--num-epochs",
-    default=5,
+    default=3,
     type=click.INT,
     help="Number of epochs to train the model for.",
 )
 @click.option(
-    "--seed",
-    default=42,
-    type=click.INT,
-    help="Seed for the random number generator.",
-)
-@click.option(
     "--train-batch-size",
-    default=16,
+    default=8,
     type=click.INT,
     help="Batch size for training the model.",
 )
 @click.option(
     "--eval-batch-size",
-    default=16,
+    default=8,
     type=click.INT,
     help="Batch size for evaluating the model.",
 )
@@ -87,17 +85,52 @@ Examples:
 @click.option(
     "--promoting-pipeline",
     is_flag=True,
-    default=False,
+    default=True,
     help="Whether to run the pipeline that promotes the model to {{target_environment}}.",
 )
+@click.option(
+    "--deploying-pipeline",
+    is_flag=True,
+    default=True,
+    help="Whether to run the pipeline that deploys the model to {{deployment_platform}}.",
+)
+@click.option(
+    "--depployment-app-title",
+    default="Sentiment Analyzer",
+    type=click.STRING,
+    help="Title of the Gradio interface.",
+)
+@click.option(
+    "--depployment-app-description",
+    default="Sentiment Analyzer",
+    type=click.STRING,
+    help="Description of the Gradio interface.",
+)
+@click.option(
+    "--depployment-app-interpretation",
+    default="default",
+    type=click.STRING,
+    help="Interpretation mode for the Gradio interface.",
+)
+@click.option(
+    "--depployment-app-examples",
+    default="",
+    type=click.STRING,
+    help="Comma-separated list of examples to show in the Gradio interface.",
+)
 def main(
-    no_cache: bool = False,
+    no_cache: bool = True,
     num_epochs: int = 3,
     train_batch_size: int = 8,
     eval_batch_size: int = 8,
     learning_rate: float = 2e-5,
     weight_decay: float = 0.01,
-    promoting_pipeline: bool = False,
+    promoting_pipeline: bool = True,
+    deploying_pipeline: bool = True,
+    depployment_app_title: str = "Sentiment Analyzer",
+    depployment_app_description: str = "Sentiment Analyzer",
+    depployment_app_interpretation: str = "default",
+    depployment_app_examples: str = "",
 ):
     """Main entry point for the pipeline execution.
 
@@ -144,7 +177,21 @@ def main(
         pipeline_args[
             "run_name"
         ] = f"{{product_name}}_promoting_pipeline_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
-        {{product_name}}_batch_inference.with_options(**pipeline_args)(**run_args_inference)
+        {{product_name}}_promote_pipeline.with_options(**pipeline_args)(**run_args_promoting)
+        logger.info("Promoting pipeline finished successfully!")
+    
+    if deploying_pipeline:
+        run_args_deploying = {
+            "title": depployment_app_title,
+            "description": depployment_app_description,
+            "interpretation": depployment_app_interpretation,
+            "examples": depployment_app_examples,
+        }
+        pipeline_args[
+            "run_name"
+        ] = f"{{product_name}}_{{deployment_platform}}_deploy_pipeline_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+        {{product_name}}_{{deployment_platform}}_deploy_pipeline.with_options(**pipeline_args)(**run_args_deploying)
+        logger.info("Deploying pipeline finished successfully!")
 
 
 if __name__ == "__main__":

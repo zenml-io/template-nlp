@@ -31,7 +31,7 @@ if orchestrator.flavor not in ["default"]:
 @pipeline(
     on_failure=notify_on_failure,
 )
-def {{product_name}}_{{deployment_platform}}_deploying_pipeline(
+def {{product_name}}_{{deployment_platform}}_deploy_pipeline(
     labels: Optional[dict] = None,
     title: Optional[str] = None,
     description: Optional[str] = None,
@@ -46,7 +46,7 @@ def {{product_name}}_{{deployment_platform}}_deploying_pipeline(
     # of one step as the input of the next step.
     pipeline_extra = get_pipeline_context().extra
     ########## Promotion stage ##########
-    save_model_locally(
+    save_model_to_deploy(
         mlflow_model_name=pipeline_extra["mlflow_model_name"],
         stage=pipeline_extra["target_env"],
     )
@@ -59,6 +59,7 @@ def {{product_name}}_{{deployment_platform}}_deploying_pipeline(
         model_name_or_path=model_name_or_path,
         tokenizer_name_or_path=tokenizer_name_or_path,
     )
+    last_step_name = "deploy_local"
 {%- endif %}
 {%- if deployment_platform == "huggingface" %}  
     deploy_to_huggingface(
@@ -67,6 +68,7 @@ def {{product_name}}_{{deployment_platform}}_deploying_pipeline(
         title=title,
         description=description,
     )
+    last_step_name = "deploy_to_huggingface"
 {%- endif %}
 {%- if deployment_platform == "skypilot" %}  
     deploy_to_skypilot(
@@ -77,6 +79,7 @@ def {{product_name}}_{{deployment_platform}}_deploying_pipeline(
         model_name_or_path=model_name_or_path,
         tokenizer_name_or_path=tokenizer_name_or_path,
     )
+    last_step_name = "deploy_to_skypilot"
 {%- endif %}
 
     notify_on_success(after=[last_step_name])

@@ -49,7 +49,7 @@ email:
     when: "{{ open_source_license != 'none' }}"
 product_name:
     type: str
-    help: The technical name of the data product you are building
+    help: The technical name of the data product you are building, Make sure it's one word and all lowercase (e.g. nlp_use_case)
     default: nlp_use_case
 target_environment:
     type: str

@@ -20,7 +20,7 @@ model_registry = Client().active_stack.model_registry
 
 
 @step()
-def save_model_locally(
+def save_model_to_deploy(
     mlflow_model_name: str,
     stage: str,
 ):
