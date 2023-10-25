@@ -31,12 +31,12 @@ if orchestrator.flavor not in ["default"]:
 @pipeline(
     on_failure=notify_on_failure,
 )
-def {{product_name}}_{{deployment}}_deployment(
+def {{product_name}}_{{deployment_platform}}_deploying_pipeline(
     labels: Optional[dict] = None,
     title: Optional[str] = None,
     description: Optional[str] = None,
-    model_name_or_path: Optional[str] = "./gardio/model"
-    tokenizer_name_or_path: Optional[str] = "{{model}}"
+    model_name_or_path: Optional[str] = None,
+    tokenizer_name_or_path: Optional[str] = None,
 ):
     """
     Model deployment pipeline.

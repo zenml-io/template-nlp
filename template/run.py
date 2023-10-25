@@ -84,14 +84,20 @@ Examples:
     type=click.FLOAT,
     help="Weight decay for training the model.",
 )
+@click.option(
+    "--promoting-pipeline",
+    is_flag=True,
+    default=False,
+    help="Whether to run the pipeline that promotes the model to {{target_environment}}.",
+)
 def main(
     no_cache: bool = False,
-    seed: int = 42,
-    num_epochs: int = 5,
-    train_batch_size: int = 16,
-    eval_batch_size: int = 16,
+    num_epochs: int = 3,
+    train_batch_size: int = 8,
+    eval_batch_size: int = 8,
     learning_rate: float = 2e-5,
     weight_decay: float = 0.01,
+    promoting_pipeline: bool = False,
 ):
     """Main entry point for the pipeline execution.
 
@@ -108,7 +114,12 @@ def main(
     # Run a pipeline with the required parameters. This executes
     # all steps in the pipeline in the correct order using the orchestrator
     # stack component that is configured in your active ZenML stack.
-    pipeline_args = {}
+    pipeline_args = {
+        "config_path":os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            "config.yaml",
+            )
+        }
     if no_cache:
         pipeline_args["enable_cache"] = False
 
@@ -126,6 +137,14 @@ def main(
     ] = f"{{product_name}}_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
     {{product_name}}_training.with_options(**pipeline_args)(**run_args_train)
     logger.info("Training pipeline finished successfully!")
+
+    # Execute Promoting Pipeline
+    if promoting_pipeline:
+        run_args_promoting = {}
+        pipeline_args[
+            "run_name"
+        ] = f"{{product_name}}_promoting_pipeline_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+        {{product_name}}_batch_inference.with_options(**pipeline_args)(**run_args_inference)
 
 
 if __name__ == "__main__":

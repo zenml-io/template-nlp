@@ -36,14 +36,14 @@ def data_loader(
 
     # Load dataset based on the dataset value
     {%- if dataset == 'financial_news' %}
-    dataset = load_dataset({{dataset}})
+    dataset = load_dataset("zeroshot/twitter-financial-news-sentiment")
     {%- endif %}
     {%- if dataset == 'imbd_reviews' %}
-    dataset = load_dataset({{dataset}})["train"]
+    dataset = load_dataset("imdb")["train"]
     dataset = dataset.train_test_split(test_size=0.25, shuffle=shuffle)
     {%- endif %}
     {%- if dataset == 'airline_reviews' %}
-    dataset = load_dataset({{dataset}})
+    dataset = load_dataset("Shayanvsf/US_Airline_Sentiment")
     dataset = dataset.rename_column("airline_sentiment", "label")
     dataset = dataset.remove_columns(["airline_sentiment_confidence","negativereason_confidence"])
     {%- endif %}

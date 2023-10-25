@@ -17,11 +17,11 @@ logger = get_logger(__name__)
 
 @step()
 def deploy_locally(
-    labels: dict[str, str] = ["Negative", "Positive"],
-    title: str = "ZenML",
-    description: str = "ZenML NLP Use-Case",
-    model_name_or_path: str,
-    tokenizer_name_or_path: str,
+    labels: Optional[dict[str, str]] = ["Negative", "Positive"],
+    title: Optional[str] = "ZenML",
+    description: Optional[str] = "ZenML NLP Use-Case",
+    model_name_or_path: str = "./gardio/model",
+    tokenizer_name_or_path: str = "./gradio/tokenizer",
 ):
     """
     

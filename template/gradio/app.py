@@ -48,7 +48,7 @@ def sentiment_analysis(
         return e_x / e_x.sum(axis=0)
 
     def analyze_text(text):
-        tokenizer = AutoTokenizer.from_pretrained(tokenizer_name_or_path, do_lower_case=True)
+        tokenizer = AutoTokenizer.from_pretrained(tokenizer_name_or_path)
         model = AutoModelForSequenceClassification.from_pretrained(model_name_or_path)
 
         text = preprocess(text)

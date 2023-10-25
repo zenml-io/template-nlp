@@ -26,7 +26,7 @@ logger = get_logger(__name__)
 
 
 @pipeline(on_failure=notify_on_failure)
-def {{product_name}}_training_{{dataset}}(
+def {{product_name}}_training_pipeline(
     lower_case: Optional[bool] = True,
     padding: Optional[str] = "max_length",
     max_seq_length: Optional[int] = 128,
@@ -92,7 +92,7 @@ def {{product_name}}_training_{{dataset}}(
     model_log_register(
         model=model,
         tokenizer=tokenizer,
-        name="{{product_name}}_training_{{dataset}}",
+        name="{{product_name}}_model",
     )
 
     notify_on_success(after=[model_log_register])
