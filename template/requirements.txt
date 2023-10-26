@@ -1,3 +1,4 @@
 torchvision
 accelerate
+gradio
 zenml[server]

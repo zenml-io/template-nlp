@@ -50,4 +50,4 @@ def promote_get_versions() -> (
         logger.info("No currently promoted model version found.")
     ### YOUR CODE ENDS HERE ###
 
-    return current_version, current_version
+    return latest_versions, current_version

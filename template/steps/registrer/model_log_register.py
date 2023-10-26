@@ -61,5 +61,6 @@ def register_model(
         transformers_model=components,
         artifact_path=mlflow_model_name,
         registered_model_name=mlflow_model_name,
+        task="text-classification",
     )
     ### YOUR CODE ENDS HERE ###

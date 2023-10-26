@@ -1,6 +1,6 @@
 # {% include 'template/license_header' %}
 
-from typing import Optional
+from typing import Optional, List
 import subprocess
 
 from zenml import step
@@ -13,11 +13,13 @@ logger = get_logger(__name__)
 
 @step()
 def deploy_locally(
-    labels: Optional[dict[str, str]] = ["Negative", "Positive"],
+    model_name_or_path: str,
+    tokenizer_name_or_path: str,
+    labels: List[str],
     title: Optional[str] = "ZenML",
     description: Optional[str] = "ZenML NLP Use-Case",
-    model_name_or_path: str = "./gardio/model",
-    tokenizer_name_or_path: str = "./gradio/tokenizer",
+    interpretation: Optional[str] = "default",
+    example: Optional[str] = "This use-case is awesome!",
 ):
     """
     
@@ -39,9 +41,6 @@ def deploy_locally(
         Returns:
             The process ID of the Gradio app.
         """
-        # Define the command to start the Gradio app
-        command = ["python", "app.py"]
-
         # Start the Gradio app in a separate process
         process = subprocess.Popen(command)
 
@@ -51,9 +50,13 @@ def deploy_locally(
         return process.pid
 
     lables = ",".join(labels)
-    command = ["python", "./gradio/app.py", "--tokenizer_name", tokenizer_name_or_path, "--model_name", model_name_or_path, 
+    # Construct the path to the app.py file
+    app_path = str(os.path.join(Client().root, "gradio", "app.py"))
+    model_path = str(os.path.join(Client().root, model_name_or_path))
+    tokenizer_path = str(os.path.join(Client().root, tokenizer_name_or_path))
+    command = ["python", app_path, "--tokenizer_name_or_path", tokenizer_path, "--model_name_or_path", model_path, 
         "--labels", lables, "--title", title, "--description", description, 
-       "--interpretation", "default", "--examples", "This use-case is awesome!"]
+       "--interpretation", interpretation, "--examples", example]
 
     # Call the function to launch the script
     pid = start_gradio_app(command)

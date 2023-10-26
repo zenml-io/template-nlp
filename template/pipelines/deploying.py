@@ -1,6 +1,6 @@
 # {% include 'template/license_header' %}
 
-from typing import Optional
+from typing import Optional, List
 
 from steps import (
     notify_on_failure,
@@ -36,11 +36,11 @@ if orchestrator.flavor not in ["local", "vm_aws", "vm_gcp"]:
     on_failure=notify_on_failure,
 )
 def {{product_name}}_{{deployment_platform}}_deploy_pipeline(
-    labels: Optional[dict] = None,
+    labels: Optional[List[str]] = ["Negative", "Positive"],
     title: Optional[str] = None,
     description: Optional[str] = None,
-    model_name_or_path: Optional[str] = None,
-    tokenizer_name_or_path: Optional[str] = None,
+    model_name_or_path: Optional[str] = "gardio/model",
+    tokenizer_name_or_path: Optional[str] = "gradio/tokenizer",
     interpretation: Optional[str] = None,
     example: Optional[str] = None,
 ):
@@ -58,7 +58,6 @@ def {{product_name}}_{{deployment_platform}}_deploy_pipeline(
     )
 {%- if deployment_platform == "local" %}  
     deploy_locally(
-        model="{{model}}",
         labels=labels,
         title=title,
         description=description,
@@ -66,8 +65,9 @@ def {{product_name}}_{{deployment_platform}}_deploy_pipeline(
         example=example,
         model_name_or_path=model_name_or_path,
         tokenizer_name_or_path=tokenizer_name_or_path,
+        after=["save_model_to_deploy"],
     )
-    last_step_name = "deploy_local"
+    last_step_name = "deploy_locally"
 {%- endif %}
 {%- if deployment_platform == "huggingface" %}  
     deploy_to_huggingface(
@@ -75,12 +75,12 @@ def {{product_name}}_{{deployment_platform}}_deploy_pipeline(
         labels=labels,
         title=title,
         description=description,
+        after=["save_model_to_deploy"],
     )
     last_step_name = "deploy_to_huggingface"
 {%- endif %}
 {%- if deployment_platform == "skypilot" %}  
     deploy_to_skypilot(
-        model="{{model}}",
         labels=labels,
         title=title,
         description=description,
@@ -88,6 +88,7 @@ def {{product_name}}_{{deployment_platform}}_deploy_pipeline(
         example=example,
         model_name_or_path=model_name_or_path,
         tokenizer_name_or_path=tokenizer_name_or_path,
+        after=["save_model_to_deploy"],
     )
     last_step_name = "deploy_to_skypilot"
 {%- endif %}

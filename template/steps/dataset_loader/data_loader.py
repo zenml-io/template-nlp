@@ -32,7 +32,7 @@ def data_loader(
         The loaded dataset artifact.
     """
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
-    logger.info(f"Loaded dataset {{dataset}}")
+    logger.info(f"Loading dataset {{dataset}}... ")
 
     # Load dataset based on the dataset value
     {%- if dataset == 'financial_news' %}
@@ -52,6 +52,7 @@ def data_loader(
     logger.info(dataset)
     logger.info(f"Sample Example 1 : {dataset['train'][0]['text']} with label {dataset['train'][0]['label']}")
     logger.info(f"Sample Example 1 : {dataset['train'][1]['text']} with label {dataset['train'][1]['label']}")
+    logger.info(f" Dataset Loaded Successfully")
     ### YOUR CODE ENDS HERE ###
 
     return dataset

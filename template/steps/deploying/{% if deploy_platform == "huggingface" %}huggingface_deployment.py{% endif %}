@@ -1,6 +1,6 @@
 # {% include 'template/license_header' %}
 
-from typing import Optional
+from typing import Optional, List
 from huggingface_hub import create_branch, login, HfApi
 
 from zenml import step
@@ -14,7 +14,7 @@ logger = get_logger(__name__)
 @step()
 def deploy_to_huggingface(
     repo_name: str,
-    labels: dict[str, str] = ["Negative", "Positive"],
+    labels: Optional[List[str]] = ["Negative", "Positive"],
     title: str = "ZenML",
     description: str = "ZenML NLP Use-Case",
 ):

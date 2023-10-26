@@ -55,7 +55,7 @@ Examples:
 )
 @click.option(
     "--num-epochs",
-    default=3,
+    default=1,
     type=click.INT,
     help="Number of epochs to train the model for.",
 )
@@ -114,7 +114,7 @@ Examples:
     help="Interpretation mode for the Gradio interface.",
 )
 @click.option(
-    "--depployment-app-examples",
+    "--depployment-app-example",
     default="",
     type=click.STRING,
     help="Comma-separated list of examples to show in the Gradio interface.",
