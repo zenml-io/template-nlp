@@ -1,3 +1,5 @@
+# {% include 'template/license_header' %}
+
 import click
 import numpy as np
 from transformers import AutoModelForSequenceClassification, AutoTokenizer

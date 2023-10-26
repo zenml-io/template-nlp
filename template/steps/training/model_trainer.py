@@ -17,8 +17,7 @@ from zenml import step
 from zenml.client import Client
 from zenml.integrations.mlflow.experiment_trackers import MLFlowExperimentTracker
 from zenml.logger import get_logger
-
-from template.utils.misc import compute_metrics
+from utils.misc import compute_metrics
 
 # Initialize logger
 logger = get_logger(__name__)
@@ -89,7 +88,7 @@ def model_trainer(
     data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 
     # Set the number of labels
-    num_labels = num_labels or len(train_dataset.unique("labels"))
+    num_labels = len(train_dataset.unique("labels")) or num_labels
 
     # Set the logging steps
     logging_steps = len(train_dataset) // train_batch_size
@@ -104,6 +103,8 @@ def model_trainer(
         weight_decay=weight_decay,
         evaluation_strategy='steps',
         save_strategy='steps',
+        save_steps=1000,
+        eval_steps=200,
         logging_steps=logging_steps,
         save_total_limit=5,
         report_to="mlflow",
@@ -113,7 +114,7 @@ def model_trainer(
 
     # Load the model
     model = AutoModelForSequenceClassification.from_pretrained(
-        {{model}}, num_labels=num_labels
+        "{{model}}", num_labels=num_labels
     )
 
     # Enable autologging

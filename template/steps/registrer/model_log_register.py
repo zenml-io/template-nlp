@@ -29,7 +29,7 @@ if not experiment_tracker or not isinstance(
 
 
 @step(experiment_tracker=experiment_tracker.name)
-def model_log_register(
+def register_model(
     model: PreTrainedModel,
     tokenizer: PreTrainedTokenizerBase,
     mlflow_model_name: Optional[str] = "model",

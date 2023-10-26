@@ -10,7 +10,7 @@ from steps import (
     tokenizer_loader,
     tokenization_step,
     model_trainer,
-    model_log_register,
+    register_model,
 {%- if metric_compare_promotion %}
     promote_get_metric,
     promote_metric_compare_promoter,
@@ -89,11 +89,11 @@ def {{product_name}}_training_pipeline(
     )
 
     ########## Log and Register stage ##########
-    model_log_register(
+    register_model(
         model=model,
         tokenizer=tokenizer,
-        name="{{product_name}}_model",
+        mlflow_model_name="{{product_name}}_model",
     )
 
-    notify_on_success(after=[model_log_register])
+    notify_on_success(after=["register_model"])
     ### YOUR CODE ENDS HERE ###

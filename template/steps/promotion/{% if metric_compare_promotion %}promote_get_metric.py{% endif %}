@@ -3,9 +3,7 @@
 
 from typing_extensions import Annotated
 
-import pandas as pd
-from sklearn.metrics import accuracy_score
-from zenml import step
+from zenml import get_step_context, step
 from zenml.client import Client
 from zenml.logger import get_logger
 from zenml.integrations.mlflow.experiment_trackers import MLFlowExperimentTracker

@@ -80,7 +80,7 @@ dataset:
         - financial_news
         - airline_reviews
         - imbd_reviews
-    default: imbd_reviews
+    default: airline_reviews
 model:
     type: str
     help: "The name of the model to use from HuggingFace Models"

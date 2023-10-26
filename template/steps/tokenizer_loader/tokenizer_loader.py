@@ -36,21 +36,9 @@ def tokenizer_loader(
         The initialized tokenizer.
     """
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
-    {%- if model == 'bert' %}
     tokenizer = AutoTokenizer.from_pretrained(
-        "bert-base-uncased", do_lower_case=lower_case
+        "{{model}}", do_lower_case=lower_case
     )
-    {%- endif %}
-    {%- if model == 'roberta' %}
-    tokenizer = AutoTokenizer.from_pretrained(
-        "roberta-base", do_lower_case=lower_case
-    )
-    {%- endif %}
-    {%- if model == 'distilbert' %}
-    tokenizer = AutoTokenizer.from_pretrained(
-        "distilbert-base-cased", do_lower_case=lower_case
-    )
-    {%- endif %}
     ### YOUR CODE ENDS HERE ###
 
     return tokenizer

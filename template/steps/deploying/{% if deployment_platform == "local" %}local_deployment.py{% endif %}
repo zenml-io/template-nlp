@@ -3,10 +3,6 @@
 from typing import Optional
 import subprocess
 
-from transformers import (
-    PreTrainedModel,
-    PreTrainedTokenizerBase,
-)
 from zenml import step
 from zenml.client import Client
 from zenml.logger import get_logger
@@ -33,21 +29,34 @@ def deploy_locally(
         The trained model and tokenizer.
     """
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
+    def start_gradio_app(command: list[str]) -> int:
+        """
+        Start the Gradio app in a separate process.
+
+        Args:
+            command: The command to start the Gradio app.
+        
+        Returns:
+            The process ID of the Gradio app.
+        """
+        # Define the command to start the Gradio app
+        command = ["python", "app.py"]
+
+        # Start the Gradio app in a separate process
+        process = subprocess.Popen(command)
+
+        # Print the process ID
+        logger.info(f"Started Gradio app with process ID: {process.pid}")
+
+        return process.pid
+
     lables = ",".join(labels)
     command = ["python", "./gradio/app.py", "--tokenizer_name", tokenizer_name_or_path, "--model_name", model_name_or_path, 
-        "--labels", lables, "--title", "ZenML", "--description", description, 
+        "--labels", lables, "--title", title, "--description", description, 
        "--interpretation", "default", "--examples", "This use-case is awesome!"]
 
-    # Launch the script in a separate process
-    process = subprocess.Popen(command)
-
-    # Print the process ID
-    print(f"Launched script with process ID: {process.pid}")
-
-    return process.pid
-
     # Call the function to launch the script
-    pid = launch_script()
+    pid = start_gradio_app(command)
     logger.info(f"Process ID: {pid}")
     logger.info(f"To kill the process, run: kill -9 {pid}")
     ### YOUR CODE ENDS HERE ###

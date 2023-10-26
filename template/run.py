@@ -1,15 +1,16 @@
 # {% include 'template/license_header' %}
 
+import os
+import click
+from datetime import datetime as dt
 
-from zenml.steps.external_artifact import ExternalArtifact
-from zenml.logger import get_logger
 from pipelines import (
-    {{product_name}}_training,
+    {{product_name}}_training_pipeline,
     {{product_name}}_promote_pipeline,
     {{product_name}}_{{deployment_platform}}_deploy_pipeline,
 )
-import click
-from datetime import datetime as dt
+from zenml.logger import get_logger
+
 
 logger = get_logger(__name__)
 
@@ -168,7 +169,7 @@ def main(
     pipeline_args[
         "run_name"
     ] = f"{{product_name}}_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
-    {{product_name}}_training.with_options(**pipeline_args)(**run_args_train)
+    {{product_name}}_training_pipeline.with_options(**pipeline_args)(**run_args_train)
     logger.info("Training pipeline finished successfully!")
 
     # Execute Promoting Pipeline

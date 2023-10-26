@@ -14,7 +14,7 @@ from .promotion import (
 {%- endif %}
     promote_get_versions,
 )
-from .registrer import model_log_register
+from .registrer import register_model
 from .tokenizer_loader import (
     tokenizer_loader,
 )
@@ -22,3 +22,16 @@ from .tokenzation import (
     tokenization_step,
 )
 from .training import model_trainer
+
+from .deploying import (
+    save_model_to_deploy,
+{% if deployment_platform == "local" %}
+    deploy_locally,
+{% endif %}
+{% if deployment_platform == "huggingface" %}
+    deploy_to_huggingface,
+{% endif %}
+{% if deployment_platform == "skypilot" %}
+    deploy_to_skypilot,
+{%- endif %}
+)

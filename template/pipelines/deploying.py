@@ -5,16 +5,20 @@ from typing import Optional
 from steps import (
     notify_on_failure,
     notify_on_success,
-{%- if metric_compare_promotion %}
-    promote_get_metric,
-    promote_metric_compare_promoter,
-{%- else %}
-    promote_latest,
+    save_model_to_deploy,
+{% if deployment_platform == "local" %}
+    deploy_locally,
+{% endif %}
+{% if deployment_platform == "huggingface" %}
+    deploy_to_huggingface,
+{% endif %}
+{% if deployment_platform == "skypilot" %}
+    deploy_to_skypilot,
 {%- endif %}
-    promote_get_versions,
 )
-from zenml import get_pipeline_context
+from zenml import get_pipeline_context, pipeline
 from zenml.logger import get_logger
+from zenml.client import Client
 
 logger = get_logger(__name__)
 
@@ -22,7 +26,7 @@ logger = get_logger(__name__)
 orchestrator = Client().active_stack.orchestrator
 
 # Check if orchestrator flavor is either default or skypilot
-if orchestrator.flavor not in ["default"]:
+if orchestrator.flavor not in ["local", "vm_aws", "vm_gcp"]:
     raise RuntimeError(
         "Your active stack needs to contain a default or skypilot orchestrator for "
         "the deployment pipeline to work."
@@ -51,7 +55,7 @@ def {{product_name}}_{{deployment_platform}}_deploy_pipeline(
         stage=pipeline_extra["target_env"],
     )
 {%- if deployment_platform == "local" %}  
-    deploy_local(
+    deploy_locally(
         model="{{model}}",
         labels=labels,
         title=title,

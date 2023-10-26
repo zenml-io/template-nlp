@@ -11,12 +11,12 @@ logger = get_logger(__name__)
 
 @step
 def tokenization_step(
-    padding: str,
+    tokenizer: PreTrainedTokenizerBase,
+    dataset: DatasetDict,
+    padding: str = "max_length",
     max_seq_length: int = 512,
     text_column: str = "text",
     label_column: str = "label",
-    tokenizer: PreTrainedTokenizerBase,
-    dataset: DatasetDict,
 ) -> Annotated[DatasetDict, "tokenized_data"]:
     """
     Tokenization step.
@@ -69,7 +69,7 @@ def tokenization_step(
         # Tokenize the examples with padding, truncation, and a specified maximum length
         result = tokenizer(
             examples[text_column],
-            padding="max_length",
+            padding=padding,
             truncation=True,
             max_length=max_length or max_seq_length,
         )

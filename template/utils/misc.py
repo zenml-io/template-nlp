@@ -39,27 +39,3 @@ def find_max_length(dataset: list[str]) -> int:
         The maximum length of the dataset.
     """
     return len(max(dataset, key=lambda x: len(x.split())).split())
-
-
-class HFSentimentAnalysisDataset(StrEnum):
-    """HuggingFace Sentiment Analysis datasets."""
-
-    financial_news = "zeroshot/twitter-financial-news-sentiment"
-    imbd_reviews = "imdb"
-    airline_reviews = "Shayanvsf/US_Airline_Sentiment"
-
-
-class HFPretrainedModel(StrEnum):
-    """HuggingFace Sentiment Analysis Model."""
-
-    bert = "bert-base-uncased"
-    roberta = "roberta-base"
-    distilbert = "distilbert-base-cased"
-
-
-class HFPretrainedTokenizer(StrEnum):
-    """HuggingFace Sentiment Analysis datasets."""
-
-    bert = "bert-base-uncased"
-    roberta = "roberta-base"
-    distilbert = "distilbert-base-cased"
