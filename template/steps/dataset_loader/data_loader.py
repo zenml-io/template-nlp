@@ -50,8 +50,8 @@ def data_loader(
 
     # Log the dataset and sample examples
     logger.info(dataset)
-    logger.info("Sample Example 1 :", dataset["train"][0])
-    logger.info("Sample Example 2 :", dataset["train"][1])
+    logger.info(f"Sample Example 1 : {dataset['train'][0]['text']} with label {dataset['train'][0]['label']}")
+    logger.info(f"Sample Example 1 : {dataset['train'][1]['text']} with label {dataset['train'][1]['label']}")
     ### YOUR CODE ENDS HERE ###
 
     return dataset

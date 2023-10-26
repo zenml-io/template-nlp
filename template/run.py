@@ -131,7 +131,7 @@ def main(
     depployment_app_title: str = "Sentiment Analyzer",
     depployment_app_description: str = "Sentiment Analyzer",
     depployment_app_interpretation: str = "default",
-    depployment_app_examples: str = "",
+    depployment_app_example: str = "",
 ):
     """Main entry point for the pipeline execution.
 
@@ -186,7 +186,7 @@ def main(
             "title": depployment_app_title,
             "description": depployment_app_description,
             "interpretation": depployment_app_interpretation,
-            "examples": depployment_app_examples,
+            "example": depployment_app_example,
         }
         pipeline_args[
             "run_name"

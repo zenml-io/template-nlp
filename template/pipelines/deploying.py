@@ -41,6 +41,8 @@ def {{product_name}}_{{deployment_platform}}_deploy_pipeline(
     description: Optional[str] = None,
     model_name_or_path: Optional[str] = None,
     tokenizer_name_or_path: Optional[str] = None,
+    interpretation: Optional[str] = None,
+    example: Optional[str] = None,
 ):
     """
     Model deployment pipeline.
@@ -60,6 +62,8 @@ def {{product_name}}_{{deployment_platform}}_deploy_pipeline(
         labels=labels,
         title=title,
         description=description,
+        interpretation=interpretation,
+        example=example,
         model_name_or_path=model_name_or_path,
         tokenizer_name_or_path=tokenizer_name_or_path,
     )
@@ -80,6 +84,8 @@ def {{product_name}}_{{deployment_platform}}_deploy_pipeline(
         labels=labels,
         title=title,
         description=description,
+        interpretation=interpretation,
+        example=example,
         model_name_or_path=model_name_or_path,
         tokenizer_name_or_path=tokenizer_name_or_path,
     )

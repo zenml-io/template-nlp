@@ -28,7 +28,7 @@ import gradio as gr
 )
 @click.option(
     "--examples",
-    default="bert,This airline sucks -_-",
+    default="This is an awesome journey, I love it!",
     help="Comma-separated list of examples to show in the Gradio interface.",
 )
 def sentiment_analysis(
