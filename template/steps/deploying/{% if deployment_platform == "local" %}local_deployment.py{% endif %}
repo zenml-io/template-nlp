@@ -1,6 +1,7 @@
 # {% include 'template/license_header' %}
 
 from typing import Optional, List
+import os
 import subprocess
 
 from zenml import step
@@ -52,12 +53,10 @@ def deploy_locally(
     lables = ",".join(labels)
     # Construct the path to the app.py file
     app_path = str(os.path.join(Client().root, "gradio", "app.py"))
-    model_path = str(os.path.join(Client().root, model_name_or_path))
-    tokenizer_path = str(os.path.join(Client().root, tokenizer_name_or_path))
     command = ["python", app_path, "--tokenizer_name_or_path", tokenizer_path, "--model_name_or_path", model_path, 
         "--labels", lables, "--title", title, "--description", description, 
        "--interpretation", interpretation, "--examples", example]
-
+    logger.info(f"Command: {command}")
     # Call the function to launch the script
     pid = start_gradio_app(command)
     logger.info(f"Process ID: {pid}")

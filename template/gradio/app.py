@@ -1,15 +1,35 @@
-# {% include 'template/license_header' %}
+# Apache Software License 2.0
+# 
+# Copyright (c) ZenML GmbH 2023. All rights reserved.
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+# http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# 
 
 import click
 import numpy as np
+import os
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
+from os.path import dirname
 
 import gradio as gr
+from zenml.logger import get_logger
 
+# Initialize logger
+logger = get_logger(__name__)
 
 @click.command()
-@click.option("--tokenizer_name_or_path", default="roberta-base", help="Name or the path of the tokenizer.")
-@click.option("--model_name_or_path", default="./gradio/model", help="Name or the path of the model.")
+@click.option("--tokenizer_name_or_path", default="tokenizer", help="Name or the path of the tokenizer.")
+@click.option("--model_name_or_path", default="model", help="Name or the path of the model.")
 @click.option(
     "--labels", default="Negative,Positive", help="Comma-separated list of labels."
 )
@@ -50,8 +70,12 @@ def sentiment_analysis(
         return e_x / e_x.sum(axis=0)
 
     def analyze_text(text):
-        tokenizer = AutoTokenizer.from_pretrained(tokenizer_name_or_path)
-        model = AutoModelForSequenceClassification.from_pretrained(model_name_or_path)
+        model_path = f"{dirname(__file__)}/{tokenizer_name_or_path}/"
+        logger.info(f"Loading model from {model_path}")
+        tokenizer_path = f"{dirname(__file__)}/{model_name_or_path}/"
+        logger.info(f"Loading tokenizer from {tokenizer_path}")
+        tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
+        model = AutoModelForSequenceClassification.from_pretrained(model_path)
 
         text = preprocess(text)
         encoded_input = tokenizer(text, return_tensors="pt")

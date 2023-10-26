@@ -39,8 +39,8 @@ def {{product_name}}_{{deployment_platform}}_deploy_pipeline(
     labels: Optional[List[str]] = ["Negative", "Positive"],
     title: Optional[str] = None,
     description: Optional[str] = None,
-    model_name_or_path: Optional[str] = "gardio/model",
-    tokenizer_name_or_path: Optional[str] = "gradio/tokenizer",
+    model_name_or_path: Optional[str] = "model",
+    tokenizer_name_or_path: Optional[str] = "tokenizer",
     interpretation: Optional[str] = None,
     example: Optional[str] = None,
 ):
