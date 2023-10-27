@@ -7,7 +7,7 @@ from datetime import datetime as dt
 from pipelines import (
     {{product_name}}_training_pipeline,
     {{product_name}}_promote_pipeline,
-    {{product_name}}_{{deployment_platform}}_deploy_pipeline,
+    {{product_name}}_deploy_pipeline,
 )
 from zenml.logger import get_logger
 
@@ -93,7 +93,7 @@ Examples:
     "--deploying-pipeline",
     is_flag=True,
     default=True,
-    help="Whether to run the pipeline that deploys the model to {{deployment_platform}}.",
+    help="Whether to run the pipeline that deploys the model to selected deployment platform.",
 )
 @click.option(
     "--depployment-app-title",
@@ -182,6 +182,7 @@ def main(
         logger.info("Promoting pipeline finished successfully!")
     
     if deploying_pipeline:
+        pipeline_args["enable_cache"] = False
         run_args_deploying = {
             "title": depployment_app_title,
             "description": depployment_app_description,
@@ -190,8 +191,8 @@ def main(
         }
         pipeline_args[
             "run_name"
-        ] = f"{{product_name}}_{{deployment_platform}}_deploy_pipeline_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
-        {{product_name}}_{{deployment_platform}}_deploy_pipeline.with_options(**pipeline_args)(**run_args_deploying)
+        ] = f"{{product_name}}_deploy_pipeline_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+        {{product_name}}_deploy_pipeline.with_options(**pipeline_args)(**run_args_deploying)
         logger.info("Deploying pipeline finished successfully!")
 
 

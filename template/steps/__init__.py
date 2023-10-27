@@ -25,13 +25,13 @@ from .training import model_trainer
 
 from .deploying import (
     save_model_to_deploy,
-{% if deployment_platform == "local" %}
+{% if deploy_locally %}
     deploy_locally,
 {% endif %}
-{% if deployment_platform == "huggingface" %}
+{% if deploy_to_huggingface %}
     deploy_to_huggingface,
 {% endif %}
-{% if deployment_platform == "skypilot" %}
+{% if deploy_to_skypilot == "skypilot" %}
     deploy_to_skypilot,
 {%- endif %}
 )

@@ -6,13 +6,13 @@ from steps import (
     notify_on_failure,
     notify_on_success,
     save_model_to_deploy,
-{% if deployment_platform == "local" %}
+{% if deploy_locally %}
     deploy_locally,
 {% endif %}
-{% if deployment_platform == "huggingface" %}
+{% if deploy_to_huggingface %}
     deploy_to_huggingface,
 {% endif %}
-{% if deployment_platform == "skypilot" %}
+{% if deploy_to_skypilot == "skypilot" %}
     deploy_to_skypilot,
 {%- endif %}
 )
@@ -35,7 +35,7 @@ if orchestrator.flavor not in ["local", "vm_aws", "vm_gcp"]:
 @pipeline(
     on_failure=notify_on_failure,
 )
-def {{product_name}}_{{deployment_platform}}_deploy_pipeline(
+def {{product_name}}_deploy_pipeline(
     labels: Optional[List[str]] = ["Negative", "Positive"],
     title: Optional[str] = None,
     description: Optional[str] = None,
@@ -43,6 +43,7 @@ def {{product_name}}_{{deployment_platform}}_deploy_pipeline(
     tokenizer_name_or_path: Optional[str] = "tokenizer",
     interpretation: Optional[str] = None,
     example: Optional[str] = None,
+    repo_name: Optional[str] = "{{product_name}}",
 ):
     """
     Model deployment pipeline.
@@ -51,12 +52,14 @@ def {{product_name}}_{{deployment_platform}}_deploy_pipeline(
     # Link all the steps together by calling them and passing the output
     # of one step as the input of the next step.
     pipeline_extra = get_pipeline_context().extra
-    ########## Promotion stage ##########
+    ########## Save Model locally stage ##########
     save_model_to_deploy(
         mlflow_model_name=pipeline_extra["mlflow_model_name"],
         stage=pipeline_extra["target_env"],
     )
-{%- if deployment_platform == "local" %}  
+
+    ########## Deployment stage ##########
+{%- if deploy_locally %}  
     deploy_locally(
         labels=labels,
         title=title,
@@ -67,30 +70,32 @@ def {{product_name}}_{{deployment_platform}}_deploy_pipeline(
         tokenizer_name_or_path=tokenizer_name_or_path,
         after=["save_model_to_deploy"],
     )
-    last_step_name = "deploy_locally"
 {%- endif %}
-{%- if deployment_platform == "huggingface" %}  
+
+{%- if deploy_to_huggingface %}  
+
     deploy_to_huggingface(
-        repo_name="{{project_name}}",
-        labels=labels,
-        title=title,
-        description=description,
+        repo_name=repo_name,
         after=["save_model_to_deploy"],
     )
-    last_step_name = "deploy_to_huggingface"
 {%- endif %}
-{%- if deployment_platform == "skypilot" %}  
+
+{%- if deploy_to_skypilot %}  
+
     deploy_to_skypilot(
-        labels=labels,
-        title=title,
-        description=description,
-        interpretation=interpretation,
-        example=example,
-        model_name_or_path=model_name_or_path,
-        tokenizer_name_or_path=tokenizer_name_or_path,
         after=["save_model_to_deploy"],
     )
+{%- endif %}
+
+{%- if deploy_to_skypilot %} 
+
     last_step_name = "deploy_to_skypilot"
+{%- elif deploy_to_huggingface %}
+
+    last_step_name = "deploy_to_huggingface"
+{%- elif deploy_locally %}
+
+    last_step_name = "deploy_locally"
 {%- endif %}
 
     notify_on_success(after=[last_step_name])

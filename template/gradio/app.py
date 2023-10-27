@@ -22,10 +22,6 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 from os.path import dirname
 
 import gradio as gr
-from zenml.logger import get_logger
-
-# Initialize logger
-logger = get_logger(__name__)
 
 @click.command()
 @click.option("--tokenizer_name_or_path", default="tokenizer", help="Name or the path of the tokenizer.")
@@ -55,7 +51,7 @@ def sentiment_analysis(
     tokenizer_name_or_path, model_name_or_path, labels, title, description, interpretation, examples
 ):
     labels = labels.split(",")
-    examples = [examples.split(",")]
+    examples = [examples]
 
     def preprocess(text):
         new_text = []
@@ -70,10 +66,10 @@ def sentiment_analysis(
         return e_x / e_x.sum(axis=0)
 
     def analyze_text(text):
-        model_path = f"{dirname(__file__)}/{tokenizer_name_or_path}/"
-        logger.info(f"Loading model from {model_path}")
-        tokenizer_path = f"{dirname(__file__)}/{model_name_or_path}/"
-        logger.info(f"Loading tokenizer from {tokenizer_path}")
+        model_path = f"{dirname(__file__)}/{model_name_or_path}/"
+        print(f"Loading model from {model_path}")
+        tokenizer_path = f"{dirname(__file__)}/{tokenizer_name_or_path}/"
+        print(f"Loading tokenizer from {tokenizer_path}")
         tokenizer = AutoTokenizer.from_pretrained(tokenizer_path)
         model = AutoModelForSequenceClassification.from_pretrained(model_path)
 

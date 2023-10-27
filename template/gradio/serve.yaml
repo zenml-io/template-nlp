@@ -1,6 +1,16 @@
 # Task name (optional), used for display purposes.
 name: nlp_use_case
 
+resources:
+  cloud: aws  # The cloud to use (optional).
+
+  # The region to use (optional). Auto-failover will be disabled
+  # if this is specified.
+  region: us-east-1
+
+  # The instance type to use (optional).
+  instance_type: t3.large
+
 # Working directory (optional), synced to ~/sky_workdir on the remote cluster
 # each time launch or exec is run with the yaml file.
 #
@@ -16,13 +26,5 @@ setup: |
   echo "Setup complete."
 
 run: |
-  conda activate vllm
-  echo 'Starting vllm api server...'
-  python -u -m app.py \
-                   ----tokenizer_name $MODEL_NAME \
-                   --tensor-parallel-size $SKYPILOT_NUM_GPUS_PER_NODE \
-                   --tokenizer hf-internal-testing/llama-tokenizer 2>&1 | tee api_server.log &
-  echo 'Waiting for vllm api server to start...'
-  while ! `cat api_server.log | grep -q 'Uvicorn running on'`; do sleep 1; done
-  echo 'Starting gradio server...'
-  python vllm/examples/gradio_webserver.py
+  echo 'Starting gradio app...'
+  python -u -m app.py

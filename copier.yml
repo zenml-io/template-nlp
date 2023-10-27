@@ -65,14 +65,18 @@ accelerator:
         - gpu
         - cpu
     default: gpu
-deployment_platform:
-    type: str
-    help: "The accelerator to use for training"
-    choices:
-        - local
-        - huggingface
-        - skypilot
-    default: local
+deploy_locally:
+    type: bool
+    help: "Whether to deploy locally"
+    default: True
+deploy_to_huggingface:
+    type: bool
+    help: "Whether to deploy to HuggingFace Hub"
+    default: False
+deploy_to_skypilot:
+    type: bool
+    help: "Whether to deploy to SkyPilot"
+    default: False
 dataset:
     type: str
     help: "The name of the dataset to use from HuggingFace Datasets"
@@ -96,6 +100,10 @@ cloud_of_choice:
         - aws
         - gcp
     default: aws
+metric_compare_promotion:
+    type: bool
+    help: "Whether to promote model versions based on metrics? Otherwise, latest trained will get promoted."
+    default: True
 notify_on_failures:
     type: bool
     help: "Whether to notify on pipeline failures?"

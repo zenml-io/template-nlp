@@ -2,12 +2,12 @@
 
 
 from .save_model import save_model_to_deploy
-{% if deployment_platform == "local" %}
+{% if deploy_locally %}
 from .local_deployment import deploy_locally
 {% endif %}
-{% if deployment_platform == "huggingface" %}
+{% if deploy_to_huggingface %}
 from .huggingface_deployment import deploy_to_huggingface
 {% endif %}
-{% if deployment_platform == "skypilot" %}
+{% if deploy_to_skypilot %}
 from .skypilot_deployment import deploy_to_skypilot
 {%- endif %}
