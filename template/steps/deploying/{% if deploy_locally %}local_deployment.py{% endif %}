@@ -21,15 +21,22 @@ def deploy_locally(
     description: Optional[str] = "This is a demo of the ZenML NLP use-case using Gradio.",
     interpretation: Optional[str] = "default",
     example: Optional[str] = "This use-case is awesome!",
-):
+) -> Annotated[str, "process_id"]:
     """
-    
+    This step deploy the model locally by starting a Gradio app
+    as a separate process in the background.
+
     Args:
-        mlfow_model_name: The name of the model in MLFlow.
-        stage: The stage of the model in MLFlow.
+        model_name_or_path: The name or path of the model to use.
+        tokenizer_name_or_path: The name or path of the tokenizer to use.
+        labels: The labels of the model.
+        title: The title of the Gradio app.
+        description: The description of the Gradio app.
+        interpretation: The interpretation of the Gradio app.
+        example: The example of the Gradio app.
 
     Returns:
-        The trained model and tokenizer.
+        The process ID of the Gradio app.
     """
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
     def start_gradio_app(command: list[str]) -> int:
@@ -70,3 +77,5 @@ def deploy_locally(
     logger.info(f"Process ID: {pid}")
     logger.info(f"To kill the process, run: kill -9 {pid}")
     ### YOUR CODE ENDS HERE ###
+
+    return pid

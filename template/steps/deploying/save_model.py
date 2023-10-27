@@ -21,12 +21,16 @@ def save_model_to_deploy(
     stage: str,
 ):
     """
+    This step saves the latest model and tokenizer to the local filesystem.
+
+    Note: It's recommended to use this step in a pipeline that is run locally,
+    using the `local` orchestrator flavor because this step saves the model
+    and tokenizer to the local filesystem, that will later then be used by the deployment
+    steps.
+
     Args:
         mlfow_model_name: The name of the model in MLFlow.
         stage: The stage of the model in MLFlow.
-
-    Returns:
-        The trained model and tokenizer.
     """
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
     logger.info(f" Loading latest version of model {mlflow_model_name} for stage {stage}...")

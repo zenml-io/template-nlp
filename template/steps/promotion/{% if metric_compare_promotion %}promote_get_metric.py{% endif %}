@@ -6,7 +6,6 @@ import mlflow
 from zenml import get_step_context, step
 from zenml.client import Client
 from zenml.logger import get_logger
-from zenml.integrations.mlflow.experiment_trackers import MLFlowExperimentTracker
 
 logger = get_logger(__name__)
 
@@ -18,25 +17,19 @@ def promote_get_metric(
     metric: str,
     version: str,
 ) -> Annotated[float, "metric"]:
-    """Get metric for comparison for one model deployment.
+    """Get metric for comparison for promoting a model.
 
-    This is an example of a metric calculation step. It get a model deployment
-    service and computes metric on recent test dataset.
-
-    This step is parameterized, which allows you to configure the step
-    independently of the step code, before running it in a pipeline.
-    In this example, the step can be configured to use different input data.
-    See the documentation for more information:
-
-        https://docs.zenml.io/user-guide/advanced-guide/configure-steps-pipelines
+    This is an example of a metric retrieval step. It is used to retrieve
+    a metric from an MLFlow run, that is linked to a model version in the
+    model registry. This step is used in the `promote_model` pipeline.
 
     Args:
-        dataset_tst: The test dataset.
-        deployment_service: Model version deployment.
+        name: Name of the model registered in the model registry.
+        metric: Name of the metric to be retrieved.
+        version: Version of the model to be retrieved.
 
     Returns:
-        Metric value for a given deployment on test set.
-
+        Metric value for a given model version.
     """
 
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###

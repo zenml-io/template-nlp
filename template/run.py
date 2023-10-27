@@ -92,7 +92,7 @@ Examples:
 @click.option(
     "--deploying-pipeline",
     is_flag=True,
-    default=True,
+    default=False,
     help="Whether to run the pipeline that deploys the model to selected deployment platform.",
 )
 @click.option(

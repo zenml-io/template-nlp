@@ -13,11 +13,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-# 
-
+from typing import Optional
 import click
 import numpy as np
-import os
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 from os.path import dirname
 
@@ -34,7 +32,7 @@ import gradio as gr
 )
 @click.option(
     "--description",
-    default="Sentiment Analyzer",
+    default="Text Classification - Sentiment Analysis - ZenML - Gradio",
     help="Description of the Gradio interface.",
 )
 @click.option(
@@ -48,12 +46,40 @@ import gradio as gr
     help="Comma-separated list of examples to show in the Gradio interface.",
 )
 def sentiment_analysis(
-    tokenizer_name_or_path, model_name_or_path, labels, title, description, interpretation, examples
+    tokenizer_name_or_path: Optional[str], 
+    model_name_or_path: Optional[str], 
+    labels: Optional[str], 
+    title: Optional[str], 
+    description: Optional[str], 
+    interpretation: Optional[str], 
+    examples: Optional[str], 
 ):
+    """Launches a Gradio interface for sentiment analysis.
+
+    This function launches a Gradio interface for text-classification.
+    It loads a model and a tokenizer from the provided paths and uses
+    them to predict the sentiment of the input text.
+    
+    Args:
+        tokenizer_name_or_path (str): Name or the path of the tokenizer.
+        model_name_or_path (str): Name or the path of the model.
+        labels (str): Comma-separated list of labels.
+        title (str): Title of the Gradio interface.
+        description (str): Description of the Gradio interface.
+        interpretation (str): Interpretation mode for the Gradio interface.
+        examples (str): Comma-separated list of examples to show in the Gradio interface.
+    """
     labels = labels.split(",")
     examples = [examples]
+    def preprocess(text: str) -> str:
+        """Preprocesses the text.
 
-    def preprocess(text):
+        Args:
+            text (str): Input text.
+        
+        Returns:
+            str: Preprocessed text.
+        """
         new_text = []
         for t in text.split(" "):
             t = "@user" if t.startswith("@") and len(t) > 1 else t

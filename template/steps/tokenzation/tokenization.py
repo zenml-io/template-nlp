@@ -21,30 +21,16 @@ def tokenization_step(
     """
     Tokenization step.
 
-    This step tokenizes the input dataset using a pre-trained tokenizer. It
-    takes in a dataset as an step input artifact and returns the tokenized
-    dataset as an output artifact.
-
-    The tokenization process includes padding, truncation, and addition of
-    labels. The maximum sequence length for tokenization is determined based
-    on the dataset.
-
-    This step is parameterized using the `DataSplitterStepParameters` class,
-    which allows you to configure the step independently of the step code,
-    before running it in a pipeline. In this example, the step can be configured
-    to use a different random seed, change the split ratio, or control whether
-    to shuffle or stratify the split. See the documentation for more
-    information:
-
-        https://docs.zenml.io/user-guide/starter-guide/cache-previous-executions
+    This step tokenizes the dataset using the tokenizer and returns the tokenized
+    dataset in a Huggingface DatasetDict format.
 
     Args:
-        padding: Padding method for tokenization.
-        max_seq_length: Maximum sequence length for tokenization.
-        text_column: Column name for text data in the dataset.
-        label_column: Column name for label data in the dataset.
-        tokenizer: Pre-trained tokenizer for tokenization.
-        dataset: The dataset to tokenize.
+        tokenizer: The tokenizer to use for tokenization.
+        dataset: The dataset to be tokenized.
+        padding: Padding strategy.
+        max_seq_length: Maximum sequence length.
+        text_column: Name of the text column.
+        label_column: Name of the label column.
 
     Returns:
         The tokenized dataset.
@@ -88,4 +74,5 @@ def tokenization_step(
     # Set the format of the tokenized dataset
     tokenized_datasets.set_format("torch")
     ### YOUR CODE ENDS HERE ###
+    
     return tokenized_datasets

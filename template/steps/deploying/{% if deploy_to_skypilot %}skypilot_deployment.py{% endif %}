@@ -19,12 +19,10 @@ logger = get_logger(__name__)
 def deploy_to_skypilot(
 ):
     """
-    Args:
-        mlfow_model_name: The name of the model in MLFlow.
-        stage: The stage of the model in MLFlow.
+    This step deploy the model to a VM using SkyPilot.
 
-    Returns:
-        The trained model and tokenizer.
+    This step requires `skypilot` to be installed.
+    aswell as a configured cloud account locally (e.g. AWS, GCP, Azure).
     """
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
     zenml_repo_root = Client().root
@@ -38,5 +36,5 @@ def deploy_to_skypilot(
     gradio_task_yaml = os.path.join(zenml_repo_root, "gradio", "serve.yaml")
     task = sky.Task.from_yaml(gradio_task_yaml)
     cluster_name =  re.sub(r'[^a-zA-Z0-9]+', '-', '{{product_name}}-cluster')
-    sky.launch(task, cluster_name=cluster_name)
+    sky.launch(task, cluster_name=cluster_name, detach_setup=True)
     ### YOUR CODE ENDS HERE ###

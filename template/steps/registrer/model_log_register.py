@@ -38,7 +38,7 @@ def register_model(
     Register model to MLFlow.
 
     This step takes in a model and tokenizer artifact previously loaded and pre-processed by
-    other steps in your pipeline, then registers the model to MLFlow for deployment.
+    other steps in your pipeline, then registers the model to MLFlow registry.
 
     Model training steps should have caching disabled if they are not deterministic
     (i.e. if the model training involve some random processes like initializing
@@ -52,7 +52,6 @@ def register_model(
         The trained model and tokenizer.
     """
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
-    # Log the model
     components = {
         "model": model,
         "tokenizer": tokenizer,

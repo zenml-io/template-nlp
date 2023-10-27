@@ -1,7 +1,8 @@
 # Task name (optional), used for display purposes.
-name: nlp_use_case
+name: {{project_name}}}
 
 resources:
+{%- if cloud_of_choice == 'aws' %}
   cloud: aws  # The cloud to use (optional).
 
   # The region to use (optional). Auto-failover will be disabled
@@ -10,6 +11,8 @@ resources:
 
   # The instance type to use (optional).
   instance_type: t3.large
+{%- else %}
+  cloud: gcp  # The cloud to use (optional).
 
 # Working directory (optional), synced to ~/sky_workdir on the remote cluster
 # each time launch or exec is run with the yaml file.

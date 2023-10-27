@@ -14,14 +14,8 @@ def data_loader(
     """
     Data loader step.
 
-    This step reads data from an external source like a file,
-    database or 3rd party library, then formats it and returns it as a step
-    output artifact.
-
-    This step is parameterized using the `HFSentimentAnalysisDataset` class, which
-    allows you to configure the step independently of the step code, before
-    running it in a pipeline. In this example, the step can be configured to
-    load different built-in scikit-learn datasets.
+    This step reads data from a Huggingface dataset or a CSV files and returns
+    a Huggingface dataset.
 
     Data loader steps should have caching disabled if they are not deterministic
     (i.e. if they data they load from the external source can be different when

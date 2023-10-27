@@ -17,13 +17,10 @@ def deploy_to_huggingface(
     repo_name: str,
 ):
     """
-    
-    Args:
-        mlfow_model_name: The name of the model in MLFlow.
-        stage: The stage of the model in MLFlow.
+    This step deploy the model to huggingface.
 
-    Returns:
-        The trained model and tokenizer.
+    Args:
+        repo_name: The name of the repo to create/use on huggingface.
     """
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
     secret = Client().get_secret("huggingface_creds")

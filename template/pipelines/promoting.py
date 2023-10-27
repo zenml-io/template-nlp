@@ -25,11 +25,17 @@ logger = get_logger(__name__)
 def {{product_name}}_promote_pipeline():
     """
     Model promotion pipeline.
+
+    This is a pipeline that promotes the best model to the chosen
+    stage, e.g. Production or Staging. Based on a metric comparison
+    between the latest and the currently promoted model version,
+    or just the latest model version.
     """
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
     # Link all the steps together by calling them and passing the output
     # of one step as the input of the next step.
     pipeline_extra = get_pipeline_context().extra
+
     ########## Promotion stage ##########
     latest_version, current_version = promote_get_versions()
 {%- if metric_compare_promotion %}

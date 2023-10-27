@@ -60,16 +60,16 @@ def model_trainer(
 
 
     Args:
-        hf_pretrained_model: The pre-trained model.
         tokenized_dataset: The tokenized dataset.
         tokenizer: The tokenizer.
         num_labels: The number of labels.
-        train_batch_size: The training batch size.
-        num_epochs: The number of epochs.
-        learning_rate: The learning rate.
-        load_best_model_at_end: Whether to load the best model at the end.
-        eval_batch_size: The evaluation batch size.
-        weight_decay: The weight decay.
+        train_batch_size: Training batch size.
+        num_epochs: Number of epochs.
+        learning_rate: Learning rate.
+        load_best_model_at_end: Whether to load the best model at the end of training.
+        eval_batch_size: Evaluation batch size.
+        weight_decay: Weight decay.
+        mlflow_model_name: The name of the model in MLFlow.
 
     Returns:
         The trained model and tokenizer.

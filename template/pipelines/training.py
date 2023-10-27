@@ -41,30 +41,33 @@ def {{product_name}}_training_pipeline(
     """
     Model training pipeline.
 
-    This is a pipeline that loads the data, processes it and splits
-    it into train and test sets, then search for best hyperparameters,
-    trains and evaluates a model.
+    This is a pipeline that loads the datataset and tokenzier,
+    tokenizes the dataset, trains a model and registers the model
+    to the model registry.
 
     Args:
-        test_size: Size of holdout set for training 0.0..1.0
-        drop_na: If `True` NA values will be removed from dataset
-        normalize: If `True` dataset will be normalized with MinMaxScaler
-        drop_columns: List of columns to drop from dataset
-        random_seed: Seed of random generator,
-        min_train_accuracy: Threshold to stop execution if train set accuracy is lower
-        min_test_accuracy: Threshold to stop execution if test set accuracy is lower
-        fail_on_accuracy_quality_gates: If `True` and `min_train_accuracy` or `min_test_accuracy`
-            are not met - execution will be interrupted early
-
+        lower_case: Whether to convert all text to lower case.
+        padding: Padding strategy.
+        max_seq_length: Maximum sequence length.
+        text_column: Name of the text column.
+        label_column: Name of the label column.
+        train_batch_size: Training batch size.
+        eval_batch_size: Evaluation batch size.
+        num_epochs: Number of epochs.
+        learning_rate: Learning rate.
+        weight_decay: Weight decay.
     """
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
     # Link all the steps together by calling them and passing the output
     # of one step as the input of the next step.
     pipeline_extra = get_pipeline_context().extra
-    ########## Tokenization stage ##########
+
+    ########## Load Dataset stage ##########
     dataset = data_loader(
         shuffle=True,
     )
+
+    ########## Tokenization stage ##########
     tokenizer = tokenizer_loader(
         lower_case=lower_case
     )
