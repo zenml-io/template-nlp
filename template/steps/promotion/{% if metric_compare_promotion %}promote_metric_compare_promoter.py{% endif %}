@@ -55,7 +55,7 @@ def promote_metric_compare_promoter(
             f"Latest model metric={latest_metric:.6f}\n"
             f"Current model metric={current_metric:.6f}"
         )
-        if latest_metric > current_metric:
+        if latest_metric <= current_metric:
             logger.info(
                 "Latest model versions outperformed current versions - promoting latest"
             )

@@ -27,4 +27,4 @@ setup: |
 
 run: |
   echo 'Starting gradio app...'
-  python -u -m app.py
+  python app.py

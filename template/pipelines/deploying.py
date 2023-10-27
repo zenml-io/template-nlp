@@ -12,7 +12,7 @@ from steps import (
 {% if deploy_to_huggingface %}
     deploy_to_huggingface,
 {% endif %}
-{% if deploy_to_skypilot == "skypilot" %}
+{% if deploy_to_skypilot %}
     deploy_to_skypilot,
 {%- endif %}
 )

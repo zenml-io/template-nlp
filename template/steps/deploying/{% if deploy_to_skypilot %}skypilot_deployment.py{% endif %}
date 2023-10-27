@@ -3,6 +3,7 @@
 from typing import Optional, List
 
 import os
+import re
 import sky
 from huggingface_hub import create_branch, login, HfApi
 
@@ -36,5 +37,6 @@ def deploy_to_skypilot(
         raise
     gradio_task_yaml = os.path.join(zenml_repo_root, "gradio", "serve.yaml")
     task = sky.Task.from_yaml(gradio_task_yaml)
-    sky.launch(task, cluster_name='{{product_name}}_cluster')
+    cluster_name =  re.sub(r'[^a-zA-Z0-9]+', '-', '{{product_name}}-cluster')
+    sky.launch(task, cluster_name=cluster_name)
     ### YOUR CODE ENDS HERE ###

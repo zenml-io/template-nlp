@@ -2,7 +2,7 @@
 
 
 from typing_extensions import Annotated
-
+import mlflow
 from zenml import get_step_context, step
 from zenml.client import Client
 from zenml.logger import get_logger
@@ -14,6 +14,7 @@ model_registry = Client().active_stack.model_registry
 
 @step
 def promote_get_metric(
+    name: str,
     metric: str,
     version: str,
 ) -> Annotated[float, "metric"]:
@@ -39,10 +40,13 @@ def promote_get_metric(
     """
 
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
-    model_version = model_registry.get_model_version(version)
-    mlflow_run = mlflow.get_run(run_id=model_version.metadata["mlflow_run_id"])
+    model_version = model_registry.get_model_version(
+        name = name,
+        version = version
+    )
+    mlflow_run = mlflow.get_run(run_id=model_version.metadata.mlflow_run_id)
     logger.info("Getting metric from MLFlow run %s", mlflow_run.info.run_id)
 
-    metric = mlflow_run.data.metrics[metric]
+    metric = mlflow_run.data.metrics.get(metric)
     ### YOUR CODE ENDS HERE ###
     return metric

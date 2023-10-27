@@ -34,11 +34,13 @@ def {{product_name}}_promote_pipeline():
     latest_version, current_version = promote_get_versions()
 {%- if metric_compare_promotion %}
     latest_metric = promote_get_metric(
-        metric="accuracy",
+        name=pipeline_extra["mlflow_model_name"],
+        metric="eval_loss",
         version=latest_version,
     )
     current_metric = promote_get_metric(
-        metric="accuracy",
+        name=pipeline_extra["mlflow_model_name"],
+        metric="eval_loss",
         version=current_version,
     )
 
