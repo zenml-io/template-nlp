@@ -1,13 +1,16 @@
 # {% include 'template/license_header' %}
 
-
-from zenml.steps.external_artifact import ExternalArtifact
-from zenml.logger import get_logger
-from pipelines import {{product_name}}_training
-from config import MetaConfig
+import os
 import click
-from typing import Optional
 from datetime import datetime as dt
+
+from pipelines import (
+    {{product_name}}_training_pipeline,
+    {{product_name}}_promote_pipeline,
+    {{product_name}}_deploy_pipeline,
+)
+from zenml.logger import get_logger
+
 
 logger = get_logger(__name__)
 
@@ -52,25 +55,19 @@ Examples:
 )
 @click.option(
     "--num-epochs",
-    default=5,
+    default=1,
     type=click.INT,
     help="Number of epochs to train the model for.",
 )
 @click.option(
-    "--seed",
-    default=42,
-    type=click.INT,
-    help="Seed for the random number generator.",
-)
-@click.option(
     "--train-batch-size",
-    default=16,
+    default=8,
     type=click.INT,
     help="Batch size for training the model.",
 )
 @click.option(
     "--eval-batch-size",
-    default=16,
+    default=8,
     type=click.INT,
     help="Batch size for evaluating the model.",
 )
@@ -86,30 +83,55 @@ Examples:
     type=click.FLOAT,
     help="Weight decay for training the model.",
 )
-<<<<<<< HEAD
-=======
 @click.option(
-    "--fail-on-accuracy-quality-gates",
+    "--promoting-pipeline",
+    is_flag=True,
+    default=True,
+    help="Whether to run the pipeline that promotes the model to {{target_environment}}.",
+)
+@click.option(
+    "--deploying-pipeline",
     is_flag=True,
     default=False,
-    help="Whether to fail the pipeline run if the model evaluation step "
-    "finds that the model is not accurate enough.",
+    help="Whether to run the pipeline that deploys the model to selected deployment platform.",
 )
->>>>>>> a3b825e (initial nlp template project code)
+@click.option(
+    "--depployment-app-title",
+    default="Sentiment Analyzer",
+    type=click.STRING,
+    help="Title of the Gradio interface.",
+)
+@click.option(
+    "--depployment-app-description",
+    default="Sentiment Analyzer",
+    type=click.STRING,
+    help="Description of the Gradio interface.",
+)
+@click.option(
+    "--depployment-app-interpretation",
+    default="default",
+    type=click.STRING,
+    help="Interpretation mode for the Gradio interface.",
+)
+@click.option(
+    "--depployment-app-example",
+    default="",
+    type=click.STRING,
+    help="Comma-separated list of examples to show in the Gradio interface.",
+)
 def main(
-    no_cache: bool = False,
-    seed: int = 42,
-    num_epochs: int = 5,
-    train_batch_size: int = 16,
-    eval_batch_size: int = 16,
+    no_cache: bool = True,
+    num_epochs: int = 3,
+    train_batch_size: int = 8,
+    eval_batch_size: int = 8,
     learning_rate: float = 2e-5,
     weight_decay: float = 0.01,
-<<<<<<< HEAD
-=======
-    min_train_accuracy: float = 0.8,
-    min_test_accuracy: float = 0.8,
-    fail_on_accuracy_quality_gates: bool = False,
->>>>>>> a3b825e (initial nlp template project code)
+    promoting_pipeline: bool = True,
+    deploying_pipeline: bool = True,
+    depployment_app_title: str = "Sentiment Analyzer",
+    depployment_app_description: str = "Sentiment Analyzer",
+    depployment_app_interpretation: str = "default",
+    depployment_app_example: str = "",
 ):
     """Main entry point for the pipeline execution.
 
@@ -121,46 +143,57 @@ def main(
 
     Args:
         no_cache: If `True` cache will be disabled.
-<<<<<<< HEAD
-=======
-        test_size: Percentage of records from the training dataset to go into the test dataset.
-        min_train_accuracy: Minimum acceptable accuracy on the train set.
-        min_test_accuracy: Minimum acceptable accuracy on the test set.
-        fail_on_accuracy_quality_gates: If `True` and any of minimal accuracy
-            thresholds are violated - the pipeline will fail. If `False` thresholds will
-            not affect the pipeline.
->>>>>>> a3b825e (initial nlp template project code)
     """
 
     # Run a pipeline with the required parameters. This executes
     # all steps in the pipeline in the correct order using the orchestrator
     # stack component that is configured in your active ZenML stack.
-    pipeline_args = {}
+    pipeline_args = {
+        "config_path":os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            "config.yaml",
+            )
+        }
     if no_cache:
         pipeline_args["enable_cache"] = False
 
     # Execute Training Pipeline
     run_args_train = {
-<<<<<<< HEAD
-=======
-        "seed": seed,
->>>>>>> a3b825e (initial nlp template project code)
         "num_epochs": num_epochs,
         "train_batch_size": train_batch_size,
         "eval_batch_size": eval_batch_size,
         "learning_rate": learning_rate,
         "weight_decay": weight_decay,
-<<<<<<< HEAD
-=======
-        "fail_on_accuracy_quality_gates": fail_on_accuracy_quality_gates,
->>>>>>> a3b825e (initial nlp template project code)
     }
 
     pipeline_args[
         "run_name"
-    ] = f"{MetaConfig.pipeline_name_training}_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
-    {{product_name}}_training.with_options(**pipeline_args)(**run_args_train)
+    ] = f"{{product_name}}_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+    {{product_name}}_training_pipeline.with_options(**pipeline_args)(**run_args_train)
     logger.info("Training pipeline finished successfully!")
+
+    # Execute Promoting Pipeline
+    if promoting_pipeline:
+        run_args_promoting = {}
+        pipeline_args[
+            "run_name"
+        ] = f"{{product_name}}_promoting_pipeline_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+        {{product_name}}_promote_pipeline.with_options(**pipeline_args)(**run_args_promoting)
+        logger.info("Promoting pipeline finished successfully!")
+    
+    if deploying_pipeline:
+        pipeline_args["enable_cache"] = False
+        run_args_deploying = {
+            "title": depployment_app_title,
+            "description": depployment_app_description,
+            "interpretation": depployment_app_interpretation,
+            "example": depployment_app_example,
+        }
+        pipeline_args[
+            "run_name"
+        ] = f"{{product_name}}_deploy_pipeline_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+        {{product_name}}_deploy_pipeline.with_options(**pipeline_args)(**run_args_deploying)
+        logger.info("Deploying pipeline finished successfully!")
 
 
 if __name__ == "__main__":

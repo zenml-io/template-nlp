@@ -49,7 +49,7 @@ email:
     when: "{{ open_source_license != 'none' }}"
 product_name:
     type: str
-    help: The technical name of the data product you are building
+    help: The technical name of the data product you are building, Make sure it's one word and all lowercase (e.g. nlp_use_case)
     default: nlp_use_case
 target_environment:
     type: str
@@ -58,6 +58,25 @@ target_environment:
         - production
         - staging
     default: staging
+accelerator:
+    type: str
+    help: "The accelerator to use for training"
+    choices:
+        - gpu
+        - cpu
+    default: gpu
+deploy_locally:
+    type: bool
+    help: "Whether to deploy locally"
+    default: True
+deploy_to_huggingface:
+    type: bool
+    help: "Whether to deploy to HuggingFace Hub"
+    default: False
+deploy_to_skypilot:
+    type: bool
+    help: "Whether to deploy to SkyPilot"
+    default: False
 dataset:
     type: str
     help: "The name of the dataset to use from HuggingFace Datasets"
@@ -65,14 +84,15 @@ dataset:
         - financial_news
         - airline_reviews
         - imbd_reviews
-    default: financial_news
+    default: airline_reviews
 model:
     type: str
     help: "The name of the model to use from HuggingFace Models"
     choices:
-        - bert
-        - gpt2
-    default: bert
+        - bert-base-uncased
+        - roberta-base
+        - distilbert-base-cased
+    default: roberta-base
 cloud_of_choice:
     type: str
     help: "Whether to use AWS cloud provider or GCP"
@@ -80,6 +100,10 @@ cloud_of_choice:
         - aws
         - gcp
     default: aws
+metric_compare_promotion:
+    type: bool
+    help: "Whether to promote model versions based on metrics? Otherwise, latest trained will get promoted."
+    default: True
 notify_on_failures:
     type: bool
     help: "Whether to notify on pipeline failures?"
@@ -92,10 +116,6 @@ zenml_server_url:
     type: str
     help: "The URL of the ZenML server [Optional]"
     default: ""
-custom_training:
-    type: bool
-    help: "Whether to use custom training or not"
-    default: False
 # CONFIGURATION -------------------------
 _templates_suffix: ""
 _subdirectory: template
