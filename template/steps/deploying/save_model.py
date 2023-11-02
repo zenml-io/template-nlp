@@ -25,7 +25,7 @@ def save_model_to_deploy(
 
     Note: It's recommended to use this step in a pipeline that is run locally,
     using the `local` orchestrator flavor because this step saves the model
-    and tokenizer to the local filesystem, that will later then be used by the deployment
+    and tokenizer to the local filesystem that will later then be used by the deployment
     steps.
 
     Args:

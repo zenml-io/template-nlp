@@ -49,7 +49,7 @@ email:
     when: "{{ open_source_license != 'none' }}"
 product_name:
     type: str
-    help: The technical name of the data product you are building, Make sure it's one word and all lowercase (e.g. nlp_use_case)
+    help: The technical name of the data product you are building. Make sure it's one word and all lowercase (e.g. nlp_use_case)
     default: nlp_use_case
 target_environment:
     type: str
@@ -102,7 +102,7 @@ cloud_of_choice:
     default: aws
 metric_compare_promotion:
     type: bool
-    help: "Whether to promote model versions based on metrics? Otherwise, latest trained will get promoted."
+    help: "Whether to promote model versions based on metrics. Otherwise, latest trained model will get promoted."
     default: True
 notify_on_failures:
     type: bool

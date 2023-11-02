@@ -96,25 +96,25 @@ Examples:
     help="Whether to run the pipeline that deploys the model to selected deployment platform.",
 )
 @click.option(
-    "--depployment-app-title",
+    "--deployment-app-title",
     default="Sentiment Analyzer",
     type=click.STRING,
     help="Title of the Gradio interface.",
 )
 @click.option(
-    "--depployment-app-description",
+    "--deployment-app-description",
     default="Sentiment Analyzer",
     type=click.STRING,
     help="Description of the Gradio interface.",
 )
 @click.option(
-    "--depployment-app-interpretation",
+    "--deployment-app-interpretation",
     default="default",
     type=click.STRING,
     help="Interpretation mode for the Gradio interface.",
 )
 @click.option(
-    "--depployment-app-example",
+    "--deployment-app-example",
     default="",
     type=click.STRING,
     help="Comma-separated list of examples to show in the Gradio interface.",

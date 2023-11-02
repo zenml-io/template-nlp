@@ -41,7 +41,7 @@ def {{product_name}}_training_pipeline(
     """
     Model training pipeline.
 
-    This is a pipeline that loads the datataset and tokenzier,
+    This is a pipeline that loads the dataset and tokenizer,
     tokenizes the dataset, trains a model and registers the model
     to the model registry.
 

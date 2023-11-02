@@ -28,9 +28,9 @@ def deploy_to_skypilot(
     zenml_repo_root = Client().root
     if not zenml_repo_root:
         logger.warning(
-            "You're running the `deploy_to_huggingface` step outside of a ZenML repo."
+            "You're running the `deploy_to_huggingface` step outside of a ZenML repo. "
             "Since the deployment step to huggingface is all about pushing the repo to huggingface, "
-            "this step will not work outside of a ZenML repo where the gradio folder is present."
+            "this step will only work within a ZenML repo where the gradio folder is present."
         )
         raise
     gradio_task_yaml = os.path.join(zenml_repo_root, "gradio", "serve.yaml")

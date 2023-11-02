@@ -24,15 +24,15 @@ def deploy_to_huggingface(
     """
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
     secret = Client().get_secret("huggingface_creds")
-    assert secret, "No secret found with name 'huggingface_creds'. Please create one with your `username` and `token`."
+    assert secret, "No secret found with name 'huggingface_creds'. Please create one that includes your `username` and `token`."
     huggingface_username = secret.secret_values["username"]
-    token = secret.secret_values["token"]
+    huggingface_token = secret.secret_values["token"]
     api = HfApi(token=token)
     hf_repo = api.create_repo(repo_id=repo_name, repo_type="space", space_sdk="gradio", exist_ok=True)
     zenml_repo_root = Client().root
     if not zenml_repo_root:
         logger.warning(
-            "You're running the `deploy_to_huggingface` step outside of a ZenML repo."
+            "You're running the `deploy_to_huggingface` step outside of a ZenML repo. "
             "Since the deployment step to huggingface is all about pushing the repo to huggingface, "
             "this step will not work outside of a ZenML repo where the gradio folder is present."
         )

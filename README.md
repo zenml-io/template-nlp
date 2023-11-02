@@ -40,7 +40,7 @@ This template provides a set of pipelines and steps to cover the end-to-end proc
 
 ### Dataset Loading
 
-The template includes a step for loading the dataset from the HuggingFace Datasets library. You can choose from three available datasets: financial_news, airline_reviews, and imbd_reviews.
+The template includes a step for loading the dataset from the HuggingFace Datasets library. You can choose from three available datasets: financial_news, airline_reviews, and imdb_reviews.
 
 ### Tokenization
 

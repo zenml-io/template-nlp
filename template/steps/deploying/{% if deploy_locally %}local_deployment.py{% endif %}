@@ -23,7 +23,7 @@ def deploy_locally(
     example: Optional[str] = "This use-case is awesome!",
 ) -> Annotated[str, "process_id"]:
     """
-    This step deploy the model locally by starting a Gradio app
+    This step deploys the model locally by starting a Gradio app
     as a separate process in the background.
 
     Args:
@@ -62,7 +62,7 @@ def deploy_locally(
     zenml_repo_root = Client().root
     if not zenml_repo_root:
         logger.warning(
-            "You're running the `deploy_to_huggingface` step outside of a ZenML repo."
+            "You're running the `deploy_to_huggingface` step outside of a ZenML repo. "
             "Since the deployment step to huggingface is all about pushing the repo to huggingface, "
             "this step will not work outside of a ZenML repo where the gradio folder is present."
         )

@@ -32,7 +32,7 @@ def data_loader(
     {%- if dataset == 'financial_news' %}
     dataset = load_dataset("zeroshot/twitter-financial-news-sentiment")
     {%- endif %}
-    {%- if dataset == 'imbd_reviews' %}
+    {%- if dataset == 'imdb_reviews' %}
     dataset = load_dataset("imdb")["train"]
     dataset = dataset.train_test_split(test_size=0.25, shuffle=shuffle)
     {%- endif %}

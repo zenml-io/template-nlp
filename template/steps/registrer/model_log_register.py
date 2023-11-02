@@ -23,7 +23,7 @@ if not experiment_tracker or not isinstance(
     experiment_tracker, MLFlowExperimentTracker
 ):
     raise RuntimeError(
-        "Your active stack needs to contain a MLFlow experiment tracker for "
+        "Your active stack needs to contain an MLFlow experiment tracker for "
         "this example to work."
     )
 
