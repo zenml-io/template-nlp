@@ -1,79 +1,72 @@
 # {% include 'template/license_header' %}
 
 
-from typing import List, Optional
+from typing import Optional
 
-from config import DEFAULT_PIPELINE_EXTRAS, PIPELINE_SETTINGS, MetaConfig
 from steps import (
-    data_loader,
-    model_trainer,
     notify_on_failure,
     notify_on_success,
-    promote_latest,
-    promote_get_versions,
-    tokenization_step,
+    data_loader,
     tokenizer_loader,
+    tokenization_step,
+    model_trainer,
+    register_model,
+{%- if metric_compare_promotion %}
+    promote_get_metric,
+    promote_metric_compare_promoter,
+{%- else %}
+    promote_latest,
+{%- endif %}
 )
-from zenml import pipeline
-from zenml.integrations.mlflow.steps.mlflow_deployer import (
-    mlflow_model_registry_deployer_step,
-)
-from zenml.integrations.mlflow.steps.mlflow_registry import mlflow_register_model_step
+from zenml import pipeline, get_pipeline_context
 from zenml.logger import get_logger
-from zenml.steps.external_artifact import ExternalArtifact
 
 
 logger = get_logger(__name__)
 
 
-@pipeline(
-    settings=PIPELINE_SETTINGS,
-    on_failure=notify_on_failure,
-    extra=DEFAULT_PIPELINE_EXTRAS,
-)
-def {{product_name}}_training(
-    #hf_dataset: HFSentimentAnalysisDataset,
-    #hf_tokenizer: HFPretrainedTokenizer,
-    #hf_pretrained_model: HFPretrainedModel,
+@pipeline(on_failure=notify_on_failure)
+def {{product_name}}_training_pipeline(
     lower_case: Optional[bool] = True,
     padding: Optional[str] = "max_length",
     max_seq_length: Optional[int] = 128,
     text_column: Optional[str] = "text",
     label_column: Optional[str] = "label",
-    train_batch_size: Optional[int] = 16,
-    eval_batch_size: Optional[int] = 16,
-    num_epochs: Optional[int] = 3,
+    train_batch_size: Optional[int] = 8,
+    eval_batch_size: Optional[int] = 8,
+    num_epochs: Optional[int] = 5,
     learning_rate: Optional[float] = 2e-5,
     weight_decay: Optional[float] = 0.01,
 ):
     """
     Model training pipeline.
 
-    This is a pipeline that loads the data, processes it and splits
-    it into train and test sets, then search for best hyperparameters,
-    trains and evaluates a model.
+    This is a pipeline that loads the dataset and tokenizer,
+    tokenizes the dataset, trains a model and registers the model
+    to the model registry.
 
     Args:
-        test_size: Size of holdout set for training 0.0..1.0
-        drop_na: If `True` NA values will be removed from dataset
-        normalize: If `True` dataset will be normalized with MinMaxScaler
-        drop_columns: List of columns to drop from dataset
-        random_seed: Seed of random generator,
-        min_train_accuracy: Threshold to stop execution if train set accuracy is lower
-        min_test_accuracy: Threshold to stop execution if test set accuracy is lower
-        fail_on_accuracy_quality_gates: If `True` and `min_train_accuracy` or `min_test_accuracy`
-            are not met - execution will be interrupted early
-
+        lower_case: Whether to convert all text to lower case.
+        padding: Padding strategy.
+        max_seq_length: Maximum sequence length.
+        text_column: Name of the text column.
+        label_column: Name of the label column.
+        train_batch_size: Training batch size.
+        eval_batch_size: Evaluation batch size.
+        num_epochs: Number of epochs.
+        learning_rate: Learning rate.
+        weight_decay: Weight decay.
     """
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
     # Link all the steps together by calling them and passing the output
     # of one step as the input of the next step.
+    pipeline_extra = get_pipeline_context().extra
+
+    ########## Load Dataset stage ##########
+    dataset = data_loader()
+
     ########## Tokenization stage ##########
-    dataset = data_loader(
-        hf_dataset=MetaConfig.dataset,
-    )
     tokenizer = tokenizer_loader(
-        hf_tokenizer=MetaConfig.tokenizer, 
         lower_case=lower_case
     )
     tokenized_data = tokenization_step(
@@ -82,14 +75,12 @@ def {{product_name}}_training(
         padding=padding,
         max_seq_length=max_seq_length,
         text_column=text_column,
-        label_column=label_column
+        label_column=label_column,
     )
 
-
     ########## Training stage ##########
-    model = model_trainer(
+    model, tokenizer = model_trainer(
         tokenized_dataset=tokenized_data,
-        hf_pretrained_model=MetaConfig.model,
         tokenizer=tokenizer,
         train_batch_size=train_batch_size,
         eval_batch_size=eval_batch_size,
@@ -98,20 +89,12 @@ def {{product_name}}_training(
         weight_decay=weight_decay,
     )
 
-    mlflow_register_model_step(
-        model,
-        name=MetaConfig.mlflow_model_name,
+    ########## Log and Register stage ##########
+    register_model(
+        model=model,
+        tokenizer=tokenizer,
+        mlflow_model_name="{{product_name}}_model",
     )
 
-    ########## Promotion stage ##########
-    latest_version, current_version = promote_get_versions(
-        after=["mlflow_register_model_step"],
-    )
-    promote_latest(
-        latest_version=latest_version,
-        current_version=current_version,
-    )
-    last_step_name = "promote_latest"
-
-    notify_on_success(after=[last_step_name])
+    notify_on_success(after=["register_model"])
     ### YOUR CODE ENDS HERE ###

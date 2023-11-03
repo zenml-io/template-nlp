@@ -1,0 +1,40 @@
+# {% include 'template/license_header' %}
+
+from typing import Optional, List
+
+import os
+import re
+import sky
+from huggingface_hub import create_branch, login, HfApi
+
+from zenml import step
+from zenml.client import Client
+from zenml.logger import get_logger
+
+# Initialize logger
+logger = get_logger(__name__)
+
+
+@step()
+def deploy_to_skypilot(
+):
+    """
+    This step deploy the model to a VM using SkyPilot.
+
+    This step requires `skypilot` to be installed.
+    aswell as a configured cloud account locally (e.g. AWS, GCP, Azure).
+    """
+    ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
+    zenml_repo_root = Client().root
+    if not zenml_repo_root:
+        logger.warning(
+            "You're running the `deploy_to_huggingface` step outside of a ZenML repo. "
+            "Since the deployment step to huggingface is all about pushing the repo to huggingface, "
+            "this step will only work within a ZenML repo where the gradio folder is present."
+        )
+        raise
+    gradio_task_yaml = os.path.join(zenml_repo_root, "gradio", "serve.yaml")
+    task = sky.Task.from_yaml(gradio_task_yaml)
+    cluster_name =  re.sub(r'[^a-zA-Z0-9]+', '-', '{{product_name}}-cluster')
+    sky.launch(task, cluster_name=cluster_name, detach_setup=True)
+    ### YOUR CODE ENDS HERE ###

@@ -1,0 +1,44 @@
+# {% include 'template/license_header' %}
+
+import os
+from typing import Optional, List
+from huggingface_hub import create_branch, login, HfApi
+
+from zenml import step
+from zenml.client import Client
+from zenml.logger import get_logger
+
+# Initialize logger
+logger = get_logger(__name__)
+
+
+@step()
+def deploy_to_huggingface(
+    repo_name: str,
+):
+    """
+    This step deploy the model to huggingface.
+
+    Args:
+        repo_name: The name of the repo to create/use on huggingface.
+    """
+    ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
+    secret = Client().get_secret("huggingface_creds")
+    assert secret, "No secret found with name 'huggingface_creds'. Please create one that includes your `username` and `token`."
+    huggingface_token = secret.secret_values["token"]
+    api = HfApi(token=token)
+    hf_repo = api.create_repo(repo_id=repo_name, repo_type="space", space_sdk="gradio", exist_ok=True)
+    zenml_repo_root = Client().root
+    if not zenml_repo_root:
+        logger.warning(
+            "You're running the `deploy_to_huggingface` step outside of a ZenML repo. "
+            "Since the deployment step to huggingface is all about pushing the repo to huggingface, "
+            "this step will not work outside of a ZenML repo where the gradio folder is present."
+        )
+        raise
+    gradio_folder_path = os.path.join(zenml_repo_root, "gradio")
+    space = api.upload_folder(
+        folder_path=gradio_folder_path, repo_id=hf_repo.repo_id, repo_type="space", 
+    )
+    logger.info(f"Space created: {space}")
+    ### YOUR CODE ENDS HERE ###

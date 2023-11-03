@@ -1,9 +1,8 @@
 # {% include 'template/license_header' %}
 
 
-from typing_extensions import Annotated
-
 from config import MetaConfig
+from typing_extensions import Annotated
 from zenml import step
 from zenml.client import Client
 from zenml.logger import get_logger
