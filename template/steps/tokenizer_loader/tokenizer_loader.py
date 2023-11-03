@@ -1,11 +1,12 @@
 # {% include 'template/license_header' %}
 
-from transformers import PreTrainedTokenizerBase, AutoTokenizer
+from transformers import AutoTokenizer, PreTrainedTokenizerBase
 from typing_extensions import Annotated
 from zenml import step
 from zenml.logger import get_logger
 
 logger = get_logger(__name__)
+
 
 @step
 def tokenizer_loader(
@@ -21,9 +22,9 @@ def tokenizer_loader(
     This step is parameterized, which allows you to configure the step independently
     of the step code, before running it in a pipeline. In this example, the step can
     be configured to use different types of tokenizers corresponding to different
-    models such as 'bert', 'roberta', or 'distilbert'. 
+    models such as 'bert', 'roberta', or 'distilbert'.
 
-    For more information on how to configure steps in a pipeline, refer to the 
+    For more information on how to configure steps in a pipeline, refer to the
     following documentation:
 
         https://docs.zenml.io/user-guide/advanced-guide/configure-steps-pipelines
@@ -36,9 +37,7 @@ def tokenizer_loader(
         The initialized tokenizer.
     """
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
-    tokenizer = AutoTokenizer.from_pretrained(
-        "{{model}}", do_lower_case=lower_case
-    )
+    tokenizer = AutoTokenizer.from_pretrained("{{model}}", do_lower_case=lower_case)
     ### YOUR CODE ENDS HERE ###
 
     return tokenizer

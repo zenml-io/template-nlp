@@ -9,7 +9,6 @@ logger = get_logger(__name__)
 
 @step
 def data_loader(
-    shuffle: bool = True,
 ) -> Annotated[DatasetDict, "dataset"]:
     """
     Data loader step.
@@ -34,7 +33,7 @@ def data_loader(
     {%- endif %}
     {%- if dataset == 'imdb_reviews' %}
     dataset = load_dataset("imdb")["train"]
-    dataset = dataset.train_test_split(test_size=0.25, shuffle=shuffle)
+    dataset = dataset.train_test_split(test_size=0.25, shuffle=True)
     {%- endif %}
     {%- if dataset == 'airline_reviews' %}
     dataset = load_dataset("Shayanvsf/US_Airline_Sentiment")

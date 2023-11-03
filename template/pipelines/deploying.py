@@ -25,10 +25,10 @@ logger = get_logger(__name__)
 # Get experiment tracker
 orchestrator = Client().active_stack.orchestrator
 
-# Check if orchestrator flavor is either default or skypilot
+# Check if orchestrator flavor is local
 if orchestrator.flavor not in ["local"]:
     raise RuntimeError(
-        "Your active stack needs to contain a default or skypilot orchestrator for "
+        "Your active stack needs to contain a local orchestrator for "
         "the deployment pipeline to work."
     )
 

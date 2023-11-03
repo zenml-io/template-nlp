@@ -47,6 +47,7 @@ def register_model(
     Args:
         model: The model.
         tokenizer: The tokenizer.
+        mlflow_model_name: Name of the model in MLFlow registry.
 
     Returns:
         The trained model and tokenizer.

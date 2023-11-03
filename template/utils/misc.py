@@ -2,10 +2,9 @@
 
 import numpy as np
 from datasets import load_metric
-from zenml.enums import StrEnum
 
 
-def compute_metrics(eval_pred: tuple) -> dict[str, float]:
+def compute_metrics(eval_pred: tuple[np.ndarray, np.ndarray]) -> dict[str, float]:
     """Compute the metrics for the model.
 
     Args:
@@ -31,6 +30,10 @@ def compute_metrics(eval_pred: tuple) -> dict[str, float]:
 
 def find_max_length(dataset: list[str]) -> int:
     """Find the maximum length of the dataset.
+
+    The dataset is a list of strings which are the text samples.
+    We need to find the maximum length of the text samples for
+    padding.
 
     Args:
         dataset: The dataset.

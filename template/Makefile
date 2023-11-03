@@ -21,5 +21,3 @@ install-local-stack:
 	zenml stack set $${stack_name} && \
 	zenml stack up
 
-install-remote-stack:
-

@@ -1,4 +1,4 @@
 torchvision
 accelerate
 gradio
-zenml[server]
+zenml[server]==0.45.5

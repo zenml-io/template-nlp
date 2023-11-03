@@ -1,12 +1,11 @@
 # {% include 'template/license_header' %}
 
 
+from config import MetaConfig
 from zenml import step
 from zenml.client import Client
 from zenml.logger import get_logger
 from zenml.model_registries.base_model_registry import ModelVersionStage
-
-from config import MetaConfig
 
 logger = get_logger(__name__)
 
@@ -14,7 +13,7 @@ model_registry = Client().active_stack.model_registry
 
 
 @step
-def promote_latest(latest_version:str, current_version:str):
+def promote_latest(latest_version: str, current_version: str):
     """Promote latest trained model.
 
     This is an example of a model promotion step, which promotes the

@@ -1,12 +1,11 @@
 # {% include 'template/license_header' %}
 
-from typing import Optional
 
 import mlflow
 from zenml import step
 from zenml.client import Client
-from zenml.model_registries.base_model_registry import ModelVersionStage
 from zenml.logger import get_logger
+from zenml.model_registries.base_model_registry import ModelVersionStage
 
 # Initialize logger
 logger = get_logger(__name__)
@@ -33,7 +32,9 @@ def save_model_to_deploy(
         stage: The stage of the model in MLFlow.
     """
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
-    logger.info(f" Loading latest version of model {mlflow_model_name} for stage {stage}...")
+    logger.info(
+        f" Loading latest version of model {mlflow_model_name} for stage {stage}..."
+    )
     # Load model from MLFlow registry
     model_version = model_registry.get_latest_model_version(
         name=mlflow_model_name,
@@ -52,5 +53,7 @@ def save_model_to_deploy(
     # Save model locally
     transformer_model.model.save_pretrained(model_path)
     transformer_model.tokenizer.save_pretrained(tokenizer_path)
-    logger.info(f" Model and tokenizer saved to {model_path} and {tokenizer_path} respectively.")
+    logger.info(
+        f" Model and tokenizer saved to {model_path} and {tokenizer_path} respectively."
+    )
     ### YOUR CODE ENDS HERE ###

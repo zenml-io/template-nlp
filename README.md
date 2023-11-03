@@ -29,7 +29,7 @@ pip install zenml[templates]
 Then, run the following command to generate the project:
 
 ```bash
-zenml init --template nlp-template
+zenml init --template template-nlp
 ```
 
 You will be prompted to provide values for the template parameters. If you want to use the default values, you can add the `--template-with-defaults` flag to the command.
