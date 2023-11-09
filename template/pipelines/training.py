@@ -12,7 +12,7 @@ from steps import (
     model_trainer,
     register_model,
 {%- if metric_compare_promotion %}
-    promote_get_metric,
+    promote_get_metrics,
     promote_metric_compare_promoter,
 {%- else %}
     promote_latest,

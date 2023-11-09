@@ -26,10 +26,11 @@ logger = get_logger(__name__)
 orchestrator = Client().active_stack.orchestrator
 
 # Check if orchestrator flavor is local
-if orchestrator.flavor not in ["local"]:
+if orchestrator.flavor not in ["local", "vm_aws", "vm_gcp", "vm_azure"]:
     raise RuntimeError(
-        "Your active stack needs to contain a local orchestrator for "
-        "the deployment pipeline to work."
+        "Your active stack needs to contain a local orchestrator or a VM "
+        "orchestrator to run this pipeline. However, we recommend using "
+        "the local orchestrator for this pipeline."
     )
 
 @pipeline(
@@ -67,10 +68,7 @@ def {{product_name}}_deploy_pipeline(
     pipeline_extra = get_pipeline_context().extra
 
     ########## Save Model locally ##########
-    save_model_to_deploy(
-        mlflow_model_name=pipeline_extra["mlflow_model_name"],
-        stage=pipeline_extra["target_env"],
-    )
+    save_model_to_deploy()
 
 {%- if deploy_locally %}  
     ########## Deploy Locally ##########

@@ -6,12 +6,11 @@ from steps import (
     notify_on_failure,
     notify_on_success,
 {%- if metric_compare_promotion %}
-    promote_get_metric,
+    promote_get_metrics,
     promote_metric_compare_promoter,
 {%- else %}
-    promote_latest,
+    promote_current,
 {%- endif %}
-    promote_get_versions,
 )
 from zenml import pipeline, get_pipeline_context
 from zenml.logger import get_logger
@@ -37,32 +36,17 @@ def {{product_name}}_promote_pipeline():
     pipeline_extra = get_pipeline_context().extra
 
     ########## Promotion stage ##########
-    latest_version, current_version = promote_get_versions()
 {%- if metric_compare_promotion %}
-    latest_metric = promote_get_metric(
-        name=pipeline_extra["mlflow_model_name"],
-        metric="eval_loss",
-        version=latest_version,
-    )
-    current_metric = promote_get_metric(
-        name=pipeline_extra["mlflow_model_name"],
-        metric="eval_loss",
-        version=current_version,
-    )
+    latest_metrics, current_metrics = promote_get_metrics()
 
     promote_metric_compare_promoter(
-        latest_metric=latest_metric,
-        current_metric=current_metric,
-        latest_version=latest_version,
-        current_version=current_version,
+        latest_metrics=latest_metrics,
+        current_metrics=current_metrics,
     )
     last_step_name = "promote_metric_compare_promoter"
 {%- else %}
-    promote_latest(
-         latest_version=latest_version,
-        current_version=current_version,
-    )
-    last_step_name = "promote_latest"
+    promote_current()
+    last_step_name = "promote_current"
 {%- endif %}
 
     notify_on_success(after=[last_step_name])

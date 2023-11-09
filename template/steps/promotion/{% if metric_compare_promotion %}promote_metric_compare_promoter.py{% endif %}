@@ -1,7 +1,8 @@
 # {% include 'template/license_header' %}
 
-
+from typing import Any
 from zenml import get_step_context, step
+from zenml.enums import ModelStages
 from zenml.client import Client
 from zenml.logger import get_logger
 from zenml.model_registries.base_model_registry import ModelVersionStage
@@ -13,10 +14,9 @@ model_registry = Client().active_stack.model_registry
 
 @step
 def promote_metric_compare_promoter(
-    latest_metric: float,
-    current_metric: float,
-    latest_version: str,
-    current_version: str,
+    latest_metrics: dict[str, str],
+    current_metrics: dict[str, str],
+    metric_to_compare: str = "accuracy",
 ):
     """Try to promote trained model.
 
@@ -37,50 +37,41 @@ def promote_metric_compare_promoter(
         https://docs.zenml.io/user-guide/advanced-guide/configure-steps-pipelines
 
     Args:
-        latest_metric: Recently trained model metric results.
-        current_metric: Previously promoted model metric results.
-        latest_version: Recently trained model version.
-        current_version: Previously promoted model version.
-
+        latest_metrics: Recently trained model metrics results.
+        current_metrics: Previously promoted model metrics results.
     """
+
 
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
     pipeline_extra = get_step_context().pipeline_run.config.extra
     should_promote = True
 
-    if latest_version == current_version:
+    breakpoint()
+
+    if latest_metrics == current_metrics:
         logger.info("No current model version found - promoting latest")
     else:
         logger.info(
-            f"Latest model metric={latest_metric:.6f}\n"
-            f"Current model metric={current_metric:.6f}"
+            f"Latest model metric={latest_metrics[metric_to_compare]:.6f}\n"
+            f"Current model metric={current_metrics[metric_to_compare]:.6f}"
         )
-        if latest_metric <= current_metric:
+        if latest_metrics[metric_to_compare] < current_metrics[metric_to_compare]:
             logger.info(
-                "Latest model versions outperformed current versions - promoting latest"
+                "Current model versions outperformed latest versions - promoting current"
             )
+            
         else:
             logger.info(
-                "Current model versions outperformed latest versions - keeping current"
+                "Latest model versions outperformed current versions - keeping latest"
             )
             should_promote = False
 
-    promoted_version = current_version
     if should_promote:
-        if latest_version != current_version:
-            model_registry.update_model_version(
-                name=pipeline_extra["mlflow_model_name"],
-                version=current_version,
-                stage=ModelVersionStage.ARCHIVED,
-            )
-        model_registry.update_model_version(
-            name=pipeline_extra["mlflow_model_name"],
-            version=latest_version,
-            stage=ModelVersionStage(pipeline_extra["target_env"]),
-        )
-        promoted_version = latest_version
+        model_config = get_step_context().model_config
+        model_version = model_config._get_model_version()
+        model_version.set_stage(pipeline_extra["target_env"], force=True)
 
     logger.info(
-        f"Current model version in `{pipeline_extra['target_env']}` is `{promoted_version}`"
+        f"Promoted current model version to {pipeline_extra['target_env']} environment"
     )
     ### YOUR CODE ENDS HERE ###

@@ -25,7 +25,7 @@ def compute_metrics(eval_pred: tuple[np.ndarray, np.ndarray]) -> dict[str, float
     precision = load_metric("precision").compute(
         predictions=predictions, references=labels, average="weighted"
     )
-    return {"accuracy": accuracy, "f1": f1, "precision": precision}
+    return {"accuracy": accuracy["accuracy"], "f1": f1["f1"], "precision": precision["precision"]}
 
 
 def find_max_length(dataset: list[str]) -> int:

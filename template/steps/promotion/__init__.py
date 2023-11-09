@@ -1,10 +1,9 @@
 # {% include 'template/license_header' %}
 
 
-from .promote_get_versions import promote_get_versions
 {%- if metric_compare_promotion %}
-from .promote_get_metric import promote_get_metric
+from .promote_get_metrics import promote_get_metrics
 from .promote_metric_compare_promoter import promote_metric_compare_promoter
 {%- else %}
-from .promote_latest import promote_latest
+from .promote_current import promote_current
 {%- endif %}

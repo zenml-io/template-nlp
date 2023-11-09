@@ -13,7 +13,7 @@ from transformers import (
     TrainingArguments,
     AutoModelForSequenceClassification,
 )
-from zenml import step
+from zenml import log_artifact_metadata, step
 from zenml.client import Client
 from zenml.integrations.mlflow.experiment_trackers import MLFlowExperimentTracker
 from zenml.logger import get_logger
@@ -132,7 +132,10 @@ def model_trainer(
 
     # Train and evaluate the model
     trainer.train()
-    trainer.evaluate()
+    eval_results = trainer.evaluate(metric_key_prefix="")
+
+    # Log the evaluation results in model control plane
+    log_artifact_metadata(output_name="model", metrics=eval_results)
     ### YOUR CODE ENDS HERE ###
 
     return model, tokenizer
