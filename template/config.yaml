@@ -4,8 +4,8 @@ settings:
   docker:
 {%- if accelerator == 'gpu' %}
     parent_image: 'huggingface/transformers-pytorch-gpu'
-    build_options:
-      - --platform linux/amd64
+    build_options: 
+      platform: 'linux/amd64'
 {%- endif %}
     required_integrations:
 {%- if cloud_of_choice == 'aws' %}
