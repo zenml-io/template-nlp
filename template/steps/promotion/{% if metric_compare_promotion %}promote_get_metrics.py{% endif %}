@@ -1,6 +1,6 @@
 # {% include 'template/license_header' %}
 
-from typing import Tuple, Any
+from typing import Tuple, Any, Dict
 from typing_extensions import Annotated
 from zenml import get_step_context, step
 from zenml.client import Client
@@ -14,7 +14,7 @@ model_registry = Client().active_stack.model_registry
 @step
 def promote_get_metrics(
 ) -> (
-    Tuple[Annotated[dict[str, Any], "latest_metrics"], Annotated[dict[str, Any], "current_metrics`"]]
+    Tuple[Annotated[Dict[str, Any], "latest_metrics"], Annotated[Dict[str, Any], "current_metrics`"]]
 ):
     """Get metrics for comparison for promoting a model.
 

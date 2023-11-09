@@ -1,6 +1,6 @@
 # {% include 'template/license_header' %}
 
-from typing import Any
+from typing import Any, Dict
 from zenml import get_step_context, step
 from zenml.enums import ModelStages
 from zenml.client import Client
@@ -14,8 +14,8 @@ model_registry = Client().active_stack.model_registry
 
 @step
 def promote_metric_compare_promoter(
-    latest_metrics: dict[str, str],
-    current_metrics: dict[str, str],
+    latest_metrics: Dict[str, str],
+    current_metrics: Dict[str, str],
     metric_to_compare: str = "accuracy",
 ):
     """Try to promote trained model.
@@ -40,13 +40,9 @@ def promote_metric_compare_promoter(
         latest_metrics: Recently trained model metrics results.
         current_metrics: Previously promoted model metrics results.
     """
-
-
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
     pipeline_extra = get_step_context().pipeline_run.config.extra
     should_promote = True
-
-    breakpoint()
 
     if latest_metrics == current_metrics:
         logger.info("No current model version found - promoting latest")
