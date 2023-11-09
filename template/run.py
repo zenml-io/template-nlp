@@ -10,7 +10,8 @@ from pipelines import (
     {{product_name}}_deploy_pipeline,
 )
 from zenml.logger import get_logger
-
+from zenml.model import ModelConfig
+from zenml.enums import ModelStages
 
 logger = get_logger(__name__)
 
@@ -84,6 +85,12 @@ Examples:
     help="Weight decay for training the model.",
 )
 @click.option(
+    "--training-pipeline",
+    is_flag=True,
+    default=True,
+    help="Whether to run the pipeline that traines the model to {{target_environment}}.",
+)
+@click.option(
     "--promoting-pipeline",
     is_flag=True,
     default=True,
@@ -119,6 +126,12 @@ Examples:
     type=click.STRING,
     help="Comma-separated list of examples to show in the Gradio interface.",
 )
+@click.option(
+    "--zenml-model-name",
+    default="sentiment_analysis",
+    type=click.STRING,
+    help="Name of the ZenML Model.",
+)
 def main(
     no_cache: bool = True,
     num_epochs: int = 3,
@@ -126,12 +139,14 @@ def main(
     eval_batch_size: int = 8,
     learning_rate: float = 2e-5,
     weight_decay: float = 0.01,
+    training_pipeline: bool = True,
     promoting_pipeline: bool = True,
-    deploying_pipeline: bool = True,
-    depployment_app_title: str = "Sentiment Analyzer",
-    depployment_app_description: str = "Sentiment Analyzer",
-    depployment_app_interpretation: str = "default",
-    depployment_app_example: str = "",
+    deploying_pipeline: bool = False,
+    deployment_app_title: str = "Sentiment Analyzer",
+    deployment_app_description: str = "Sentiment Analyzer",
+    deployment_app_interpretation: str = "default",
+    deployment_app_example: str = "",
+    zenml_model_name: str = "sentiment_analysis",
 ):
     """Main entry point for the pipeline execution.
 
@@ -157,24 +172,38 @@ def main(
     if no_cache:
         pipeline_args["enable_cache"] = False
 
-    # Execute Training Pipeline
-    run_args_train = {
-        "num_epochs": num_epochs,
-        "train_batch_size": train_batch_size,
-        "eval_batch_size": eval_batch_size,
-        "learning_rate": learning_rate,
-        "weight_decay": weight_decay,
-    }
+    if training_pipeline:
+        # Execute Training Pipeline
+        run_args_train = {
+            "num_epochs": num_epochs,
+            "train_batch_size": train_batch_size,
+            "eval_batch_size": eval_batch_size,
+            "learning_rate": learning_rate,
+            "weight_decay": weight_decay,
+        }
 
-    pipeline_args[
-        "run_name"
-    ] = f"{{product_name}}_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
-    {{product_name}}_training_pipeline.with_options(**pipeline_args)(**run_args_train)
-    logger.info("Training pipeline finished successfully!")
+        model_config = ModelConfig(
+            name=zenml_model_name,
+            license="{{open_source_license}}",
+            description="Show case Model Control Plane.",
+            create_new_model_version=True,
+            delete_new_version_on_failure=True,
+            tags=["sentiment_analysis", "huggingface"],
+        )
+
+        pipeline_args["model_config"] = model_config
+
+        pipeline_args[
+            "run_name"
+        ] = f"{{product_name}}_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
+        {{product_name}}_training_pipeline.with_options(**pipeline_args)(**run_args_train)
+        logger.info("Training pipeline finished successfully!")
 
     # Execute Promoting Pipeline
     if promoting_pipeline:
         run_args_promoting = {}
+        model_config = ModelConfig(name=zenml_model_name)
+        pipeline_args["model_config"] = model_config
         pipeline_args[
             "run_name"
         ] = f"{{product_name}}_promoting_pipeline_run_{dt.now().strftime('%Y_%m_%d_%H_%M_%S')}"
@@ -183,11 +212,17 @@ def main(
     
     if deploying_pipeline:
         pipeline_args["enable_cache"] = False
+        # Deploying pipeline has new ZenML model config
+        model_config = ModelConfig(
+            name=zenml_model_name,
+            version=ModelStages("{{target_environment}}"),
+        )
+        pipeline_args["model_config"] = model_config
         run_args_deploying = {
-            "title": depployment_app_title,
-            "description": depployment_app_description,
-            "interpretation": depployment_app_interpretation,
-            "example": depployment_app_example,
+            "title": deployment_app_title,
+            "description": deployment_app_description,
+            "interpretation": deployment_app_interpretation,
+            "example": deployment_app_example,
         }
         pipeline_args[
             "run_name"

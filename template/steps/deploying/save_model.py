@@ -1,24 +1,17 @@
 # {% include 'template/license_header' %}
 
 
-import mlflow
-from zenml import step
+from zenml import get_step_context, step
 from zenml.client import Client
+from zenml.enums import ModelStages
 from zenml.logger import get_logger
-from zenml.model_registries.base_model_registry import ModelVersionStage
 
 # Initialize logger
 logger = get_logger(__name__)
 
-# Get experiment tracker
-model_registry = Client().active_stack.model_registry
-
 
 @step()
-def save_model_to_deploy(
-    mlflow_model_name: str,
-    stage: str,
-):
+def save_model_to_deploy():
     """
     This step saves the latest model and tokenizer to the local filesystem.
 
@@ -32,27 +25,25 @@ def save_model_to_deploy(
         stage: The stage of the model in MLFlow.
     """
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
+    pipeline_extra = get_step_context().pipeline_run.config.extra
+    zenml_client = Client()
+
     logger.info(
-        f" Loading latest version of model {mlflow_model_name} for stage {stage}..."
+        f" Loading latest version of the model for stage {pipeline_extra['target_env']}..."
     )
-    # Load model from MLFlow registry
-    model_version = model_registry.get_latest_model_version(
-        name=mlflow_model_name,
-        stage=ModelVersionStage(stage),
-    ).version
-    # Load model from MLFlow registry
-    model_version = model_registry.get_model_version(
-        name=mlflow_model_name,
-        version=model_version,
-    )
-    transformer_model = mlflow.transformers.load_model(model_version.model_source_uri)
+    # Get latest saved model version in target environment
+    latest_version = get_step_context().model_config._get_model_version()
+
+    # Load model and tokenizer from Model Control Plane
+    model = latest_version.get_model_object(name="model").load()
+    tokenizer = latest_version.get_model_object(name="tokenizer").load()
     # Save the model and tokenizer locally
     model_path = "./gradio/model"  # replace with the actual path
     tokenizer_path = "./gradio/tokenizer"  # replace with the actual path
 
     # Save model locally
-    transformer_model.model.save_pretrained(model_path)
-    transformer_model.tokenizer.save_pretrained(tokenizer_path)
+    model.save_pretrained(model_path)
+    tokenizer.save_pretrained(tokenizer_path)
     logger.info(
         f" Model and tokenizer saved to {model_path} and {tokenizer_path} respectively."
     )

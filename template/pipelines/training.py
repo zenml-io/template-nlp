@@ -11,12 +11,6 @@ from steps import (
     tokenization_step,
     model_trainer,
     register_model,
-{%- if metric_compare_promotion %}
-    promote_get_metric,
-    promote_metric_compare_promoter,
-{%- else %}
-    promote_latest,
-{%- endif %}
 )
 from zenml import pipeline, get_pipeline_context
 from zenml.logger import get_logger

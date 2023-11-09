@@ -1,6 +1,7 @@
 # {% include 'template/license_header' %}
 
 from typing import Optional, List
+from typing_extensions import Annotated
 import os
 import subprocess
 
@@ -61,12 +62,11 @@ def deploy_locally(
     # Construct the path to the app.py file
     zenml_repo_root = Client().root
     if not zenml_repo_root:
-        logger.warning(
+        raise RuntimeError(
             "You're running the `deploy_to_huggingface` step outside of a ZenML repo. "
             "Since the deployment step to huggingface is all about pushing the repo to huggingface, "
             "this step will not work outside of a ZenML repo where the gradio folder is present."
         )
-        raise
     app_path = str(os.path.join(zenml_repo_root, "gradio", "app.py"))
     command = ["python", app_path, "--tokenizer_name_or_path", tokenizer_name_or_path, "--model_name_or_path", model_name_or_path, 
         "--labels", lables, "--title", title, "--description", description, 

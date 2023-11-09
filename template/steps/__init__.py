@@ -7,12 +7,11 @@ from .dataset_loader import (
 )
 from .promotion import (
 {%- if metric_compare_promotion %}
-    promote_get_metric,
+    promote_get_metrics,
     promote_metric_compare_promoter,
 {%- else %}
-    promote_latest,
+    promote_current,
 {%- endif %}
-    promote_get_versions,
 )
 from .registrer import register_model
 from .tokenizer_loader import (

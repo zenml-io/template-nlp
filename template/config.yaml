@@ -4,6 +4,8 @@ settings:
   docker:
 {%- if accelerator == 'gpu' %}
     parent_image: 'huggingface/transformers-pytorch-gpu'
+    build_options: 
+      platform: 'linux/amd64'
 {%- endif %}
     required_integrations:
 {%- if cloud_of_choice == 'aws' %}
@@ -26,9 +28,9 @@ settings:
 extra:
   mlflow_model_name: nlp_use_case_model
 {%- if target_environment == 'production' %}
-  target_env: Production
+  target_env: production
 {%- else %}
-  target_env: Staging
+  target_env: staging
 {%- endif %}
   notify_on_success: False
   notify_on_failure: True
