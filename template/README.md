@@ -192,7 +192,6 @@ The project loosely follows [the recommended ZenML project structure](https://do
 │   ├── promotion             # `zenml.steps.promotion` implementations
 │   │   ├── __init__.py
 │   │   ├── promote_latest.py # promote latest step
-│   │   ├── promote_get_version.py   # get model version step
 │   │   ├── promote_metric_compare_promoter.py  # metric compare promoter step
 │   │   └── promote_get_metrics.py   # get metric step
 │   ├── registrer            # `zenml.steps.registrer` implementations

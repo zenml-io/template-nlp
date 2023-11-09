@@ -17,6 +17,7 @@ from zenml import log_artifact_metadata, step
 from zenml.client import Client
 from zenml.integrations.mlflow.experiment_trackers import MLFlowExperimentTracker
 from zenml.logger import get_logger
+from zenml.model import ModelArtifactConfig
 from utils.misc import compute_metrics
 
 # Initialize logger
@@ -46,7 +47,7 @@ def model_trainer(
     eval_batch_size: Optional[int] = 16,
     weight_decay: Optional[float] = 0.01,
     mlflow_model_name: Optional[str] = "model",
-) -> Tuple[Annotated[PreTrainedModel, "model"], Annotated[PreTrainedTokenizerBase, "tokenizer"]]:
+) -> Tuple[Annotated[PreTrainedModel, "model", ModelArtifactConfig(overwrite=True)], Annotated[PreTrainedTokenizerBase, "tokenizer", ModelArtifactConfig(overwrite=True)]]:
     """
     Configure and train a model on the training dataset.
 
