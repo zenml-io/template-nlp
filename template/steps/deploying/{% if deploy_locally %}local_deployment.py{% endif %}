@@ -22,7 +22,7 @@ def deploy_locally(
     description: Optional[str] = "This is a demo of the ZenML NLP use-case using Gradio.",
     interpretation: Optional[str] = "default",
     example: Optional[str] = "This use-case is awesome!",
-) -> Annotated[str, "process_id"]:
+) -> Annotated[int, "process_id"]:
     """
     This step deploys the model locally by starting a Gradio app
     as a separate process in the background.
