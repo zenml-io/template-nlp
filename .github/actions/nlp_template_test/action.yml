@@ -69,13 +69,14 @@ runs:
     - name: Concatenate requirements
       shell: bash
       run: |
-        zenml integration export-requirements -o ./local_checkout/integration-requirements.txt sklearn mlflow s3 kubernetes kubeflow slack evidently
+        zenml integration export-requirements -o ./local_checkout/integration-requirements.txt mlflow s3 kubernetes kubeflow discord aws huggingface pytorch skypilot_aws
         cat ./local_checkout/requirements.txt ./local_checkout/test-requirements.txt ./local_checkout/integration-requirements.txt >> ./local_checkout/all-requirements.txt
 
     - name: Install requirements
       shell: bash
       run: |
         pip install -r ./local_checkout/all-requirements.txt
+        pip install accelerate
 
     - name: Run pytests
       shell: bash
