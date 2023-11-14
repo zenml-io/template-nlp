@@ -45,6 +45,7 @@ def generate_and_run_project(
     deploy_to_huggingface: bool = False,
     deploy_to_skypilot: bool = False,
     cloud_of_choice: str = "gcp",
+    dataset: str = "airline_reviews",
 
 ):
     """Generate and run the starter project with different options."""
@@ -66,6 +67,7 @@ def generate_and_run_project(
         "deploy_to_huggingface": deploy_to_huggingface,
         "deploy_to_skypilot": deploy_to_skypilot,
         "cloud_of_choice": cloud_of_choice,
+        "dataset": dataset,
     }
     if open_source_license:
         answers["email"] = "pytest@zenml.io"
