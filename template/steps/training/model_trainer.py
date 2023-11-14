@@ -105,7 +105,7 @@ def model_trainer(
         evaluation_strategy='steps',
         save_strategy='steps',
         save_steps=1000,
-        eval_steps=200,
+        eval_steps=100,
         logging_steps=logging_steps,
         save_total_limit=5,
         report_to="mlflow",

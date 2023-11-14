@@ -43,7 +43,7 @@ The template can be configured using the following parameters:
 | Deploy to HuggingFace | Whether to deploy to HuggingFace Hub | False |
 | Deploy to SkyPilot | Whether to deploy to SkyPilot | False |
 | Dataset | The dataset to use from HuggingFace Datasets | airline_reviews |
-| Model | The model to use from HuggingFace Models | roberta-base |
+| Model | The model to use from HuggingFace Models | distilbert-base-uncased |
 | Cloud Provider | The cloud provider to use (AWS or GCP) | aws |
 | Metric-Based Promotion | Whether to promote models based on metrics | True |
 | Notifications on Failure | Whether to notify about pipeline failures | True |

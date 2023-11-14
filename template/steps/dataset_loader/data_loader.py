@@ -4,6 +4,9 @@ from typing_extensions import Annotated
 from datasets import load_dataset, DatasetDict
 from zenml import step
 from zenml.logger import get_logger
+{%- if sample_rate %}
+import numpy as np
+{%- endif %}
 
 logger = get_logger(__name__)
 
@@ -39,6 +42,19 @@ def data_loader(
     dataset = load_dataset("Shayanvsf/US_Airline_Sentiment")
     dataset = dataset.rename_column("airline_sentiment", "label")
     dataset = dataset.remove_columns(["airline_sentiment_confidence","negativereason_confidence"])
+    {%- endif %}
+
+    {%- if sample_rate %}
+    # Sample 20% of the data randomly for the demo
+    def sample_dataset(dataset, sample_rate=0.2):
+        sampled_dataset = DatasetDict()
+        for split in dataset.keys():
+            split_size = len(dataset[split])
+            indices = np.random.choice(split_size, int(split_size * sample_rate), replace=False)
+            sampled_dataset[split] = dataset[split].select(indices)
+        return sampled_dataset
+
+    dataset = sample_dataset(dataset)
     {%- endif %}
 
     # Log the dataset and sample examples
