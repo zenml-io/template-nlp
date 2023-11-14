@@ -37,7 +37,8 @@ def generate_and_run_project(
     target_environment: str = "staging",
     notify_on_failures: bool = True,
     notify_on_successes: bool = False,
-    model: str = "distilbert-base-cased",
+    sample_rate: bool = True,
+    model: str = "distilbert-base-uncased",
     zenml_server_url: str = "",
 ):
     """Generate and run the starter project with different options."""
@@ -52,6 +53,7 @@ def generate_and_run_project(
         "notify_on_failures": notify_on_failures,
         "notify_on_successes": notify_on_successes,
         "zenml_server_url": zenml_server_url,
+        "sample_rate": sample_rate,
         "model": model,
     }
     if open_source_license:
