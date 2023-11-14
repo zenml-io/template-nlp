@@ -64,7 +64,7 @@ accelerator:
     choices:
         - gpu
         - cpu
-    default: gpu
+    default: cpu
 sample_rate:
     type: bool
     help: "Whether to use a sample of the dataset for quick iteration"

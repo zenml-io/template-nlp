@@ -40,6 +40,7 @@ def generate_and_run_project(
     sample_rate: bool = True,
     model: str = "distilbert-base-uncased",
     zenml_server_url: str = "",
+    accelerator: str = "cpu",
 ):
     """Generate and run the starter project with different options."""
 
@@ -55,6 +56,7 @@ def generate_and_run_project(
         "zenml_server_url": zenml_server_url,
         "sample_rate": sample_rate,
         "model": model,
+        "accelerator": accelerator,
     }
     if open_source_license:
         answers["email"] = "pytest@zenml.io"
