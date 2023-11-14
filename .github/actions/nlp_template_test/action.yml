@@ -30,12 +30,6 @@ runs:
         ref: ${{ inputs.ref-template }}
         path: ./local_checkout
 
-    - name: debug
-      shell: bash
-      run: |
-        ls ./local_checkout
-        ls ./local_checkout/tests
-
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
