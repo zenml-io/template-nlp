@@ -36,4 +36,4 @@ jobs:
           stack-name: ${{ matrix.stack-name }}
           python-version: ${{ matrix.python-version }}
           ref-zenml: develop
-          ref: ${{ github.ref }}
+          ref-template: ${{ github.ref }}
