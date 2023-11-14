@@ -9,6 +9,11 @@ inputs:
     type: string
     required: false
     default: ''
+  ref-template:
+    description: 'Ref of this template repo'
+    type: string
+    required: false
+    default: ''
   python-version:
     description: 'Python version'
     type: string
@@ -22,6 +27,7 @@ runs:
       uses: actions/checkout@v3
       with:
         repository: zenml-io/nlp-template
+        ref: ${{ inputs.ref-template }}
         path: ./local_checkout
 
     - name: debug
