@@ -41,6 +41,11 @@ def generate_and_run_project(
     model: str = "distilbert-base-uncased",
     zenml_server_url: str = "",
     accelerator: str = "cpu",
+    deploy_locally: bool = True,
+    deploy_to_huggingface: bool = False,
+    deploy_to_skypilot: bool = False,
+    cloud_of_choice: str = "gcp",
+
 ):
     """Generate and run the starter project with different options."""
 
@@ -57,6 +62,10 @@ def generate_and_run_project(
         "sample_rate": sample_rate,
         "model": model,
         "accelerator": accelerator,
+        "deploy_locally": deploy_locally,
+        "deploy_to_huggingface": deploy_to_huggingface,
+        "deploy_to_skypilot": deploy_to_skypilot,
+        "cloud_of_choice": cloud_of_choice,
     }
     if open_source_license:
         answers["email"] = "pytest@zenml.io"
