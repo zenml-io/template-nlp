@@ -76,7 +76,7 @@ runs:
       shell: bash
       run: |
         pip install -r ./local_checkout/all-requirements.txt
-        pip install accelerate
+        pip install accelerate torchvision
 
     - name: Run pytests
       shell: bash
