@@ -46,7 +46,7 @@ def model_trainer(
     load_best_model_at_end: Optional[bool] = True,
     eval_batch_size: Optional[int] = 16,
     weight_decay: Optional[float] = 0.01,
-    mlflow_model_name: Optional[str] = "model",
+    mlflow_model_name: Optional[str] = "sentiment_analysis",
 ) -> Tuple[Annotated[PreTrainedModel, "model", ModelArtifactConfig(overwrite=True)], Annotated[PreTrainedTokenizerBase, "tokenizer", ModelArtifactConfig(overwrite=True)]]:
     """
     Configure and train a model on the training dataset.

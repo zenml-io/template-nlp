@@ -46,6 +46,7 @@ def generate_and_run_project(
     deploy_to_skypilot: bool = False,
     cloud_of_choice: str = "gcp",
     dataset: str = "airline_reviews",
+    zenml_model_name: str = "sentiment_analysis",
 
 ):
     """Generate and run the starter project with different options."""
@@ -118,8 +119,8 @@ def generate_and_run_project(
 
             # clean up
             Client().delete_pipeline(product_name + pipeline_suffix)
-        Client().delete_model(product_name)
-        Client().active_stack.model_registry.delete_model(product_name)
+        Client().delete_model(zenml_model_name)
+        Client().active_stack.model_registry.delete_model(zenml_model_name)
 
     os.chdir(current_dir)
     shutil.rmtree(dst_path)
