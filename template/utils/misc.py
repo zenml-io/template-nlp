@@ -1,12 +1,12 @@
 # {% include 'template/license_header' %}
 
-from typing import Dict
+from typing import Dict, Tuple
 
 import numpy as np
 from datasets import load_metric
 
 
-def compute_metrics(eval_pred: tuple[np.ndarray, np.ndarray]) -> Dict[str, float]:
+def compute_metrics(eval_pred: Tuple[np.ndarray, np.ndarray]) -> Dict[str, float]:
     """Compute the metrics for the model.
 
     Args:
