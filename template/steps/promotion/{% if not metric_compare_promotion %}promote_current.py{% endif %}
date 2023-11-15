@@ -20,6 +20,7 @@ def promote_current():
     """
 
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
+    pipeline_extra = get_step_context().pipeline_run.config.extra
     logger.info(f"Promoting current model version")
     model_config = get_step_context().model_config
     model_version = model_config._get_model_version()
