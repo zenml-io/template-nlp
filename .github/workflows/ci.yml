@@ -3,18 +3,24 @@ name: CI
 on:
   workflow_dispatch:
     inputs:
-      ref:
-        description: 'Branch or tag ref to check out'
+      ref-template:
+        description: 'Branch or tag ref to check out for template'
         type: string
         required: false
-        default: 'main'
+      ref-zenml:
+        description: 'Branch or tag ref to check out for ZenML'
+        type: string
+        required: false
   workflow_call:
     inputs:
-      ref:
-        description: 'Branch or tag ref to check out'
+      ref-template:
+        description: 'Branch or tag ref to check out for template'
         type: string
         required: false
-        default: 'main'
+      ref-zenml:
+        description: 'Branch or tag ref to check out for ZenML'
+        type: string
+        required: false
   push:
     branches: ["main"]
     paths-ignore: ["README.md"]
@@ -47,5 +53,5 @@ jobs:
         with:
           stack-name: ${{ matrix.stack-name }}
           python-version: ${{ matrix.python-version }}
-          ref-zenml: ${{ inputs.ref }}
-          ref-template: ${{ github.ref }}
+          ref-zenml: ${{ inputs.ref-zenml || 'main' }}
+          ref-template: ${{ inputs.ref-template || github.ref }}
