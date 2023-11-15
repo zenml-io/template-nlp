@@ -1,12 +1,12 @@
 # {% include 'template/license_header' %}
 
-from typing import Dict
+from typing import Dict, Tuple, List
 
 import numpy as np
 from datasets import load_metric
 
 
-def compute_metrics(eval_pred: tuple[np.ndarray, np.ndarray]) -> Dict[str, float]:
+def compute_metrics(eval_pred: Tuple[np.ndarray, np.ndarray]) -> Dict[str, float]:
     """Compute the metrics for the model.
 
     Args:
@@ -34,7 +34,7 @@ def compute_metrics(eval_pred: tuple[np.ndarray, np.ndarray]) -> Dict[str, float
     }
 
 
-def find_max_length(dataset: list[str]) -> int:
+def find_max_length(dataset: List[str]) -> int:
     """Find the maximum length of the dataset.
 
     The dataset is a list of strings which are the text samples.

@@ -32,7 +32,7 @@ if not experiment_tracker or not isinstance(
 def register_model(
     model: PreTrainedModel,
     tokenizer: PreTrainedTokenizerBase,
-    mlflow_model_name: Optional[str] = "model",
+    mlflow_model_name: Optional[str] = "sentiment_analysis",
 ):
     """
     Register model to MLFlow.

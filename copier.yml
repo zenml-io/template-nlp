@@ -64,7 +64,11 @@ accelerator:
     choices:
         - gpu
         - cpu
-    default: gpu
+    default: cpu
+sample_rate:
+    type: bool
+    help: "Whether to use a sample of the dataset for quick iteration"
+    default: False
 deploy_locally:
     type: bool
     help: "Whether to deploy locally"
@@ -91,8 +95,8 @@ model:
     choices:
         - bert-base-uncased
         - roberta-base
-        - distilbert-base-cased
-    default: roberta-base
+        - distilbert-base-uncased
+    default: distilbert-base-uncased
 cloud_of_choice:
     type: str
     help: "Whether to use AWS cloud provider or GCP"

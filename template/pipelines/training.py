@@ -87,7 +87,7 @@ def {{product_name}}_training_pipeline(
     register_model(
         model=model,
         tokenizer=tokenizer,
-        mlflow_model_name="{{product_name}}_model",
+        mlflow_model_name="sentiment_analysis",
     )
 
     notify_on_success(after=["register_model"])

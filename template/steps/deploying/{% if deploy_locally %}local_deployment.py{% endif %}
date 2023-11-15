@@ -40,7 +40,7 @@ def deploy_locally(
         The process ID of the Gradio app.
     """
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
-    def start_gradio_app(command: list[str]) -> int:
+    def start_gradio_app(command: List[str]) -> int:
         """
         Start the Gradio app in a separate process.
 

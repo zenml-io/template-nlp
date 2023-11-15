@@ -43,7 +43,7 @@ The template can be configured using the following parameters:
 | Deploy to HuggingFace | Whether to deploy to HuggingFace Hub | False |
 | Deploy to SkyPilot | Whether to deploy to SkyPilot | False |
 | Dataset | The dataset to use from HuggingFace Datasets | airline_reviews |
-| Model | The model to use from HuggingFace Models | roberta-base |
+| Model | The model to use from HuggingFace Models | distilbert-base-uncased |
 | Cloud Provider | The cloud provider to use (AWS or GCP) | aws |
 | Metric-Based Promotion | Whether to promote models based on metrics | True |
 | Notifications on Failure | Whether to notify about pipeline failures | True |
@@ -65,6 +65,10 @@ For more details, check the `README.md` file in the generated project directory.
 ## 🛠️ Project Structure
 
 This NLP project template includes three main pipelines:
+
+<p align="center">
+  <img height=500 src="assets/full_template.png">
+</p>
 
 ### Training Pipeline
 
@@ -113,23 +117,16 @@ The training pipeline is the heart of the NLP project. It is responsible for pre
 
 The training pipeline is configured using the `{{product_name}}_training_pipeline` function, which includes steps for data loading, tokenization, model training, and model registration. The pipeline can be customized with parameters such as `lower_case`, `padding`, `max_seq_length`, and others to tailor the tokenization and training process to your specific NLP use case.
 
-### Training Pipeline: Data and Tokenization
+### Training Pipeline
 
-[📂 Code folder](template/steps/data_tokenization/)
+[📂 Code folder](template/steps/model_training/)
 <p align="center">
-  <img height=500 src="assets/nlp_data_tokenization.png">
+  <img height=500 src="assets/training_pipeline.png">
 </p>
 
 The first stage of the training pipeline involves loading the dataset and preparing it for the model. The `data_loader` step fetches the dataset, which is then passed to the `tokenizer_loader` and `tokenization_step` to convert the raw text data into a format suitable for the NLP model.
 
 Tokenization is a critical step in NLP pipelines, as it converts text into tokens that the model can understand. The tokenizer can be configured to handle case sensitivity, padding strategies, and sequence lengths, ensuring that the input data is consistent and optimized for training.
-
-### Training Pipeline: Model Training
-
-[📂 Code folder](template/steps/model_training/)
-<p align="center">
-  <img height=500 src="assets/nlp_model_training.png">
-</p>
 
 Once the data is tokenized, the `model_trainer` step takes over to train the NLP model. This step utilizes the tokenized dataset and the tokenizer itself to fine-tune the model on the specific task, such as sentiment analysis, text classification, or named entity recognition.
 
@@ -139,7 +136,7 @@ The model training step can be configured with parameters like `train_batch_size
 
 [📂 Code folder](template/steps/promotion/)
 <p align="center">
-  <img height=500 src="assets/nlp_promotion.png">
+  <img height=500 src="assets/promote_pipeline.png">
 </p>
 
 The promotion pipeline is responsible for promoting the best model to the chosen stage, such as Production or Staging. The pipeline can be configured to promote models based on metric comparison or simply promote the latest model version.
@@ -150,7 +147,7 @@ The `{{product_name}}_promote_pipeline` function orchestrates the promotion proc
 
 [📂 Code folder](template/steps/deployment/)
 <p align="center">
-  <img height=500 src="assets/nlp_deployment.png">
+  <img height=500 src="assets/deploy_pipeline.png">
 </p>
 
 The deployment pipeline handles the deployment of the model to various environments. It can be configured to deploy locally, to HuggingFace Hub, or to SkyPilot, depending on the project's needs.

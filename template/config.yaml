@@ -26,7 +26,7 @@ settings:
       - zenml[server]
 
 extra:
-  mlflow_model_name: nlp_use_case_model
+  mlflow_model_name: sentiment_analysis
 {%- if target_environment == 'production' %}
   target_env: production
 {%- else %}

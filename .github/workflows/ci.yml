@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   workflow_call:
   push:
-    branches: ["main", "develop"]
+    branches: ["main"]
     paths-ignore: ["README.md"]
   pull_request:
     paths-ignore: ["README.md"]
@@ -35,3 +35,5 @@ jobs:
         with:
           stack-name: ${{ matrix.stack-name }}
           python-version: ${{ matrix.python-version }}
+          ref-zenml: develop
+          ref-template: ${{ github.ref }}
