@@ -9,7 +9,11 @@ setup: remote-login
 setup:
 {%- endif %}
 	pip install -r requirements.txt
-	zenml integration install pytorch mlflow s3 gcp aws slack transformers -y
+{%- if  cloud_of_choice == 'gcp' %}
+	zenml integration install pytorch mlflow gcp slack huggingface -y
+{%- else %}
+	zenml integration install pytorch mlflow aws s3 slack huggingface -y
+{%- endif %}
 	zenml init
 
 install-local-stack:
