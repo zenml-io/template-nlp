@@ -10,7 +10,7 @@ from pipelines import (
     {{product_name}}_deploy_pipeline,
 )
 from zenml.logger import get_logger
-from zenml.model import ModelConfig
+from zenml.model.model_config import ModelConfig
 from zenml.enums import ModelStages
 
 logger = get_logger(__name__)
