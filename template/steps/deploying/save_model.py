@@ -2,7 +2,6 @@
 
 
 from zenml import get_step_context, step
-from zenml.client import Client
 from zenml.logger import get_logger
 
 # Initialize logger
@@ -25,8 +24,6 @@ def save_model_to_deploy():
     """
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
     pipeline_extra = get_step_context().pipeline_run.config.extra
-    zenml_client = Client()
-
     logger.info(
         f" Loading latest version of the model for stage {pipeline_extra['target_env']}..."
     )
@@ -34,8 +31,8 @@ def save_model_to_deploy():
     latest_version = get_step_context().model_version._get_model_version()
 
     # Load model and tokenizer from Model Control Plane
-    model = latest_version.get_model_object(name="model").load()
-    tokenizer = latest_version.get_model_object(name="tokenizer").load()
+    model = latest_version.load_artifact(name="model")
+    tokenizer = latest_version.load_artifact(name="tokenizer")
     # Save the model and tokenizer locally
     model_path = "./gradio/model"  # replace with the actual path
     tokenizer_path = "./gradio/tokenizer"  # replace with the actual path

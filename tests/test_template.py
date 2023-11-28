@@ -47,7 +47,6 @@ def generate_and_run_project(
     cloud_of_choice: str = "gcp",
     dataset: str = "airline_reviews",
     zenml_model_name: str = "sentiment_analysis",
-
 ):
     """Generate and run the starter project with different options."""
 
@@ -161,6 +160,7 @@ def test_latest_promotion(
     generate_and_run_project(
         tmp_path_factory=tmp_path_factory, metric_compare_promotion=False
     )
+
 
 def test_production_environment(
     clean_zenml_client,
