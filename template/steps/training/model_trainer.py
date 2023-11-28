@@ -13,11 +13,10 @@ from transformers import (
     TrainingArguments,
     AutoModelForSequenceClassification,
 )
-from zenml import log_artifact_metadata, step
+from zenml import ArtifactConfig, log_artifact_metadata, step
 from zenml.client import Client
 from zenml.integrations.mlflow.experiment_trackers import MLFlowExperimentTracker
 from zenml.logger import get_logger
-from zenml.model import ModelArtifactConfig
 from utils.misc import compute_metrics
 
 # Initialize logger
@@ -47,7 +46,7 @@ def model_trainer(
     eval_batch_size: Optional[int] = 16,
     weight_decay: Optional[float] = 0.01,
     mlflow_model_name: Optional[str] = "sentiment_analysis",
-) -> Tuple[Annotated[PreTrainedModel, "model", ModelArtifactConfig(overwrite=True)], Annotated[PreTrainedTokenizerBase, "tokenizer", ModelArtifactConfig(overwrite=True)]]:
+) -> Tuple[Annotated[PreTrainedModel, ArtifactConfig(name="model", is_model_artifact=True)], Annotated[PreTrainedTokenizerBase, ArtifactConfig(name="tokenizer", is_model_artifact=True)]]:
     """
     Configure and train a model on the training dataset.
 
@@ -136,7 +135,10 @@ def model_trainer(
     eval_results = trainer.evaluate(metric_key_prefix="")
 
     # Log the evaluation results in model control plane
-    log_artifact_metadata(output_name="model", metrics=eval_results)
+    log_artifact_metadata(
+        metadata={"metrics": eval_results},
+        artifact_name="model",
+    )
     ### YOUR CODE ENDS HERE ###
 
     return model, tokenizer

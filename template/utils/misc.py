@@ -1,6 +1,6 @@
 # {% include 'template/license_header' %}
 
-from typing import Dict, Tuple, List
+from typing import Dict, List, Tuple
 
 import numpy as np
 from datasets import load_metric
