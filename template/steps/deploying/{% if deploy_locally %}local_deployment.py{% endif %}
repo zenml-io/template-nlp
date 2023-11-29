@@ -58,7 +58,7 @@ def deploy_locally(
 
         return process.pid
 
-    lables = ",".join(labels)
+    labels = ",".join(labels)
     # Construct the path to the app.py file
     zenml_repo_root = Client().root
     if not zenml_repo_root:
@@ -69,7 +69,7 @@ def deploy_locally(
         )
     app_path = str(os.path.join(zenml_repo_root, "gradio", "app.py"))
     command = ["python", app_path, "--tokenizer_name_or_path", tokenizer_name_or_path, "--model_name_or_path", model_name_or_path, 
-        "--labels", lables, "--title", title, "--description", description, 
+        "--labels", labels, "--title", title, "--description", description, 
        "--interpretation", interpretation, "--examples", example]
     logger.info(f"Command: {command}")
     # Call the function to launch the script

@@ -88,7 +88,7 @@ Examples:
     "--training-pipeline",
     is_flag=True,
     default=True,
-    help="Whether to run the pipeline that traines the model to {{target_environment}}.",
+    help="Whether to run the pipeline that train the model to {{target_environment}}.",
 )
 @click.option(
     "--promoting-pipeline",

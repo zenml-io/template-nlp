@@ -13,7 +13,7 @@ from .promotion import (
     promote_current,
 {%- endif %}
 )
-from .registrer import register_model
+from .register import register_model
 from .tokenizer_loader import (
     tokenizer_loader,
 )
