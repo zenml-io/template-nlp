@@ -65,8 +65,6 @@ def {{product_name}}_deploy_pipeline(
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
     # Link all the steps together by calling them and passing the output
     # of one step as the input of the next step.
-    pipeline_extra = get_pipeline_context().extra
-
     ########## Save Model locally ##########
     save_model_to_deploy()
 

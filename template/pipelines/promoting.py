@@ -33,8 +33,6 @@ def {{product_name}}_promote_pipeline():
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
     # Link all the steps together by calling them and passing the output
     # of one step as the input of the next step.
-    pipeline_extra = get_pipeline_context().extra
-
     ########## Promotion stage ##########
 {%- if metric_compare_promotion %}
     latest_metrics, current_metrics = promote_get_metrics()
