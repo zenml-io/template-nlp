@@ -76,11 +76,11 @@ deploy_locally:
 deploy_to_huggingface:
     type: bool
     help: "Whether to deploy to HuggingFace Hub"
-    default: False
+    default: True
 deploy_to_skypilot:
     type: bool
     help: "Whether to deploy to SkyPilot"
-    default: False
+    default: True
 dataset:
     type: str
     help: "The name of the dataset to use from HuggingFace Datasets"
