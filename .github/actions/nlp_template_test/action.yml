@@ -58,7 +58,7 @@ runs:
       if: ${{ inputs.ref-zenml != '' }}
       shell: bash
       env:
-        UV_HTTP_TIMEOUT: '1000'
+        UV_HTTP_TIMEOUT: '1500'
       run: |
         uv pip install --system "git+https://github.com/zenml-io/zenml.git@${{ inputs.ref-zenml }}" "zenml[server]@git+https://github.com/zenml-io/zenml.git@${{ inputs.ref-zenml }}"
     
@@ -66,7 +66,7 @@ runs:
       if: ${{ inputs.ref-zenml == '' }}
       shell: bash
       env:
-        UV_HTTP_TIMEOUT: '1000'
+        UV_HTTP_TIMEOUT: '1500'
       run: |
         uv pip install --system zenml "zenml[server]"
     
@@ -79,7 +79,7 @@ runs:
     - name: Install requirements
       shell: bash
       env:
-        UV_HTTP_TIMEOUT: '1000'
+        UV_HTTP_TIMEOUT: '1500'
       run: |
         uv pip install --system -r ./local_checkout/all-requirements.txt
         uv pip install --system accelerate torchvision
