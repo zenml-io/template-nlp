@@ -96,6 +96,7 @@ model:
         - bert-base-uncased
         - roberta-base
         - distilbert-base-uncased
+        - distilbert-base-uncased-distilled-squad
     default: distilbert-base-uncased
 cloud_of_choice:
     type: str
