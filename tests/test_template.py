@@ -28,8 +28,6 @@ from zenml.enums import ExecutionStatus
 
 TEMPLATE_DIRECTORY = str(pathlib.Path.joinpath(pathlib.Path(__file__).parent.parent))
 
-SMALLER_DISTILBERT = "sshleifer/tiny-distilbert-base-uncased-finetuned-sst-2-english"
-
 def generate_and_run_project(
     tmp_path_factory: pytest.TempPathFactory,
     open_source_license: Optional[str] = "apache",
@@ -62,7 +60,7 @@ def generate_and_run_project(
         "notify_on_successes": notify_on_successes,
         "zenml_server_url": zenml_server_url,
         "sample_rate": sample_rate,
-        "model": SMALLER_DISTILBERT,
+        "model": model,
         "accelerator": accelerator,
         "deploy_locally": deploy_locally,
         "deploy_to_huggingface": deploy_to_huggingface,
