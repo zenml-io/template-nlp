@@ -28,7 +28,6 @@ from zenml.enums import ExecutionStatus
 
 TEMPLATE_DIRECTORY = str(pathlib.Path.joinpath(pathlib.Path(__file__).parent.parent))
 
-
 def generate_and_run_project(
     tmp_path_factory: pytest.TempPathFactory,
     open_source_license: Optional[str] = "apache",
