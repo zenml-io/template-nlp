@@ -28,6 +28,7 @@ from zenml.enums import ExecutionStatus
 
 TEMPLATE_DIRECTORY = str(pathlib.Path.joinpath(pathlib.Path(__file__).parent.parent))
 
+SMALLER_DISTILBERT = "distilbert-base-uncased-distilled-squad"
 
 def generate_and_run_project(
     tmp_path_factory: pytest.TempPathFactory,
@@ -61,7 +62,7 @@ def generate_and_run_project(
         "notify_on_successes": notify_on_successes,
         "zenml_server_url": zenml_server_url,
         "sample_rate": sample_rate,
-        "model": model,
+        "model": SMALLER_DISTILBERT,
         "accelerator": accelerator,
         "deploy_locally": deploy_locally,
         "deploy_to_huggingface": deploy_to_huggingface,
