@@ -28,7 +28,7 @@ from zenml.enums import ExecutionStatus
 
 TEMPLATE_DIRECTORY = str(pathlib.Path.joinpath(pathlib.Path(__file__).parent.parent))
 
-SMALLER_DISTILBERT = "distilbert-base-uncased-distilled-squad"
+SMALLER_DISTILBERT = "sshleifer/tiny-distilbert-base-uncased-finetuned-sst-2-english"
 
 def generate_and_run_project(
     tmp_path_factory: pytest.TempPathFactory,
