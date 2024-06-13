@@ -1,11 +1,7 @@
 # {% include 'template/license_header' %}
 
-from typing import Optional, List
-
 import os
 import re
-import sky
-from huggingface_hub import create_branch, login, HfApi
 
 from zenml import step
 from zenml.client import Client
@@ -16,14 +12,15 @@ logger = get_logger(__name__)
 
 
 @step()
-def deploy_to_skypilot(
-):
+def deploy_to_skypilot():
     """
     This step deploy the model to a VM using SkyPilot.
 
     This step requires `skypilot` to be installed.
-    aswell as a configured cloud account locally (e.g. AWS, GCP, Azure).
+    as well as a configured cloud account locally (e.g. AWS, GCP, Azure).
     """
+    import sky
+
     ### ADD YOUR OWN CODE HERE - THIS IS JUST AN EXAMPLE ###
     zenml_repo_root = Client().root
     if not zenml_repo_root:
