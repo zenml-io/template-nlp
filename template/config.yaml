@@ -6,7 +6,11 @@ settings:
     parent_image: 'huggingface/transformers-pytorch-gpu'
     build_options: 
       platform: 'linux/amd64'
+    python_package_installer_args:
+      system: null
 {%- endif %}
+    python_package_installer: uv
+    install_stack_requirements: False
     required_integrations:
 {%- if cloud_of_choice == 'aws' %}
       - aws
