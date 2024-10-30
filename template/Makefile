@@ -2,7 +2,7 @@ stack_name ?= nlp_template_stack
 
 {%- if zenml_server_url != '' %}
 remote-login:
-	zenml connect --url "{{zenml_server_url}}"
+	zenml login "{{zenml_server_url}}"
 
 setup: remote-login
 {%- else %}
@@ -23,4 +23,4 @@ install-local-stack:
 	zenml stack register -a default -o default -r mlflow_local_$${stack_name} \
     -e mlflow_local_$${stack_name} $${stack_name} && \
 	zenml stack set $${stack_name} && \
-	zenml up
+	zenml login --local
