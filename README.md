@@ -56,7 +56,7 @@ After configuring your project, you can run the following commands to set up you
 cd <your_project_directory>
 make setup
 make install-local-stack
-zenml up
+zenml login --local
 python run.py
 ```
 
