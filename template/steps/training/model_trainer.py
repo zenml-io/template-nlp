@@ -13,7 +13,7 @@ from transformers import (
     TrainingArguments,
     AutoModelForSequenceClassification,
 )
-from zenml import ArtifactConfig, log_artifact_metadata, step
+from zenml import ArtifactConfig, log_metadata, step
 from zenml.client import Client
 from zenml.integrations.mlflow.experiment_trackers import MLFlowExperimentTracker
 from zenml.logger import get_logger
@@ -135,7 +135,7 @@ def model_trainer(
     eval_results = trainer.evaluate(metric_key_prefix="")
 
     # Log the evaluation results in model control plane
-    log_artifact_metadata(
+    log_metadata(
         metadata={"metrics": eval_results},
         artifact_name="model",
     )
