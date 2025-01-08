@@ -14,14 +14,14 @@ Once you have ZenML installed, you can initialize a new project using this templ
 
 ```bash
 zenml init --template <short_name_of_template>
-# example: zenml init --template template-nlp
+# example: zenml init --template nlp
 ```
 
 Running the command above will result in input prompts being shown to you. If you would like to rely on default values for the ZenML project template - you can add --template-with-defaults to the same command, like this:
 
 ```bash
 zenml init --template <short_name_of_template> --template-with-defaults
-# example: zenml init --template template-nlp --template-with-defaults
+# example: zenml init --template nlp --template-with-defaults
 ```
 
 
