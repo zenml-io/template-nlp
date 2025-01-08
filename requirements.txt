@@ -2,3 +2,5 @@ copier
 jinja2-time
 pyyaml-include<2.0
 datasets>=2.12.0,<3.0.0
+# Starting with version 1.6.0 this is incompatible with the metrics computation of the datasets library
+scikit-learn<1.6.0
